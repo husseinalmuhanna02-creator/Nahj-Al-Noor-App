@@ -1,7 +1,7 @@
 {
   "name": "Nahj Al-Noor",
   "short_name": "Nahj Al-Noor",
-  "start_url": "/Nahj-Al-Noor-App/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
   "theme_color": "#000000"
