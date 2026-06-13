@@ -1,11 +1,9 @@
 <!doctype html>
 <html lang="ar" dir="rtl">
   <head>
-    <link rel="apple-touch-icon" href="./logo.png">
-    <link rel="manifest" href="./manifest.json">
-    <meta name="apple-mobile-web-app-title" content="Nahj Al-Noor">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="./pwa-icon.svg">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="./manifest.json">
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>نهج النور</title>
@@ -34,6 +32,7 @@
     <link rel="stylesheet" crossorigin href="./assets/index-STtblDwA.css">
   <link rel="manifest" href="./manifest.webmanifest"></head>
   <body>
+    <script>if("serviceWorker" in navigator){navigator.serviceWorker.register("./sw.js");}</script>
     <div id="root"></div>
   </body>
 </html>
