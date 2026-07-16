@@ -23,7 +23,7 @@ import { signInAnonymously } from 'firebase/auth';
 
 // Lazy load large/heavy components for fast startup and instant navigation responsiveness
 const Library = lazy(() => import('./components/Library'));
-const Zowar = lazy(() => import('./components/Zowar'));
+import Zowar from './components/Zowar';
 const PhotoGallery = lazy(() => import('./components/PhotoGallery'));
 const Television = lazy(() => import('./components/Television'));
 const Qibla = lazy(() => import('./components/Qibla'));
