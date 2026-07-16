@@ -24,16 +24,16 @@ jobs:
         run: |
           npm install @capacitor/android @capacitor/cli
           npx cap add android
-      - name: Force Java 17 Compatibility
+      - name: Fix Compatibility
         run: |
-          # استبدال شامل لإصدار 21 بـ 17 في جميع ملفات build.gradle
-          find . -name "build.gradle" -exec sed -i 's/17/17/g' {} +
-          find . -name "build.gradle" -exec sed -i 's/21/17/g' {} +
           echo "org.gradle.java.home=$JAVA_HOME" > android/gradle.properties
+          sed -i 's/21/17/g' android/build.gradle
+          sed -i 's/21/17/g' android/app/build.gradle
       - name: Build APK
         run: |
           cd android
-          ./gradlew assembleRelease
+          chmod +x gradlew
+          ./gradlew clean assembleRelease --stacktrace
       - uses: actions/upload-artifact@v4
         with:
           name: app-release
