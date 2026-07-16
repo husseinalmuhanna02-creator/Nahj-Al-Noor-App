@@ -10,11 +10,19 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm install
-      - run: npm install @capacitor/android
-      - run: npx cap sync android
-      - run: cd android && ./gradlew assembleRelease
-      - uses: actions/upload-artifact@v4
+      - name: Install
+        run: |
+          npm install
+          npm install --save-dev @capacitor/core @capacitor/cli @capacitor/android
+      - name: Build Web
+        run: npm run build
+      - name: Sync and Build
+        run: |
+          npx cap sync
+          cd android
+          ./gradlew assembleRelease
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
         with:
           name: app-release
           path: android/app/build/outputs/apk/release/*.apk
