@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Inter:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@400;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Noto Sans Arabic", ui-sans-serif, system-ui, sans-serif;
+  --font-arabic: "Amiri", serif;
+  --font-serif: "Playfair Display", "Times New Roman", serif;
+  
+  --color-natural-bg: #FFFFFF;
+  --color-natural-dark: #1B4332;
+  --color-natural-accent: #B45309;
+  --color-natural-text: #1A1A1A;
+  --color-natural-border: #F1F1F1;
+  --color-natural-soft: #F9F9F9;
+
+  --color-dark-bg: #0F172A;
+  --color-dark-card: #1E293B;
+  --color-dark-text: #F1F5F9;
+  --color-dark-accent: #F59E0B;
+  --color-dark-border: #334155;
+  --color-dark-soft: #1E293B;
+}
+
+@layer base {
+  html {
+    @apply transition-colors duration-300;
+  }
+  
+  body {
+    @apply bg-natural-bg text-natural-text font-sans transition-colors duration-300;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  
+  input, textarea, [contenteditable="true"] {
+    -webkit-user-select: text !important;
+    -khtml-user-select: text !important;
+    -moz-user-select: text !important;
+    -ms-user-select: text !important;
+    user-select: text !important;
+  }
+  
+  html.dark body {
+    @apply bg-dark-bg text-dark-text;
+  }
+}
+
+@theme {
+  --animate-spin-slow: spin 8s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.font-arabic {
+  font-family: var(--font-arabic);
+}
+
+.font-serif-header {
+  font-family: var(--font-serif);
+}
+
+/* Hide native Android/iOS start playback play button icons on webkit/blink */
+video::-webkit-media-controls-start-playback-button {
+  display: none !important;
+}
+video::-webkit-media-controls-enclosure {
+  display: none !important;
+}
+video::-webkit-media-controls {
+  display: none !important;
+}
+
+

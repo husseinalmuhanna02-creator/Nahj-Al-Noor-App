@@ -1,0 +1,111 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helpers ---
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isVerified() && request.auth.token.email == 'hsynalmhnh224@gmail.com';
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Validation Helpers ---
+
+    function isValidSearchIndex(data) {
+      return data.bookId is string && data.bookId.size() <= 128 &&
+             data.bookTitle is string && data.bookTitle.size() <= 256 &&
+             data.pageNumber is number &&
+             data.content is string && data.content.size() <= 50000 &&
+             data.originalContent is string && data.originalContent.size() <= 100000 &&
+             data.keywords is list && data.keywords.size() <= 500 &&
+             data.indexedAt is string;
+    }
+
+    function isValidFatwaQuestion(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.question is string && data.question.size() <= 1000 &&
+             data.status in ['pending', 'answered'] &&
+             (data.status == 'pending' || isAdmin()); // Non-admins can only create pending questions
+    }
+
+    function isValidTvChannel(data) {
+      return data.keys().hasAll(['name', 'logoUrl', 'streamUrl']) &&
+             data.keys().size() == 3 &&
+             data.name is string && data.name.size() <= 200 &&
+             data.logoUrl is string && data.logoUrl.size() <= 2000 &&
+             data.streamUrl is string && data.streamUrl.size() <= 2000;
+    }
+
+    // --- Collections ---
+
+    match /search_indexes/{indexId} {
+      // Identity Protection: Any signed in user can search, only admin can manage the index.
+      allow read: if isSignedIn();
+      
+      // Strict List Query Enforcer: Prevents massive scraping without keyword or bookId filter
+      // Actually, for search, we usually allow listing if query is scoped.
+      // But search is usually performed by keywords.
+      allow list: if isSignedIn(); // We rely on client to filter by keywords, but we could enforce things here.
+
+      allow create: if isAdmin() && isValidSearchIndex(incoming()) && isValidId(indexId);
+      
+      allow update: if isAdmin() && isValidSearchIndex(incoming()) && (
+        // Action: Generic Admin Update
+        incoming().diff(existing()).affectedKeys().hasAll(['content', 'keywords', 'indexedAt'])
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    match /fatwa_questions/{questionId} {
+      // Users can only see their own questions
+      allow read: if isSignedIn() && (existing().userId == request.auth.uid || isAdmin());
+      
+      // Enforce secure list queries: User must query their own userId
+      allow list: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+
+      allow create: if isSignedIn() && isValidFatwaQuestion(incoming()) && isValidId(questionId) &&
+                       incoming().status == 'pending'; // Normal users can only create pending status
+      
+      allow update: if isSignedIn() && (
+        // User can only update their own question if it's still pending
+        (existing().userId == request.auth.uid && existing().status == 'pending' && 
+         incoming().diff(existing()).affectedKeys().hasOnly(['question', 'text', 'timestamp', 'createdAt']) &&
+         isValidFatwaQuestion(incoming())) ||
+        // Admin can answer
+        (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['answer', 'status']))
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    match /tv_channels/{channelId} {
+      allow read, list: if isSignedIn();
+      allow create, update: if isAdmin() && isValidTvChannel(incoming()) && isValidId(channelId);
+      allow delete: if isAdmin();
+    }
+  }
+}

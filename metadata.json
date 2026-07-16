@@ -1,0 +1,15 @@
+{
+  "name": "Nahj al-Nur | نهج النور",
+  "description": "An integrated Islamic Shia application featuring live television, prayer times, Hijri calendar, and a smart library with OCR-based search.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API",
+    "Prayer Times",
+    "Tasbih Counter",
+    "Hijri Calendar",
+    "Supplications Library",
+    "Live Television"
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "entities": {
+    "SearchIndex": {
+      "title": "Search Index",
+      "description": "Indexed content from books and supplications for cloud search.",
+      "type": "object",
+      "properties": {
+        "bookId": { "type": "string", "description": "Unique ID of the book or item." },
+        "bookTitle": { "type": "string", "description": "Title of the book or item." },
+        "pageNumber": { "type": "number", "description": "Page number (0 for non-PDF items)." },
+        "content": { "type": "string", "description": "Normalized Arabic text content." },
+        "originalContent": { "type": "string", "description": "Original text content." },
+        "keywords": { "type": "array", "description": "Keywords extracted from the content." },
+        "url": { "type": "string", "description": "URL to the source PDF or item." },
+        "category": { "type": "string", "description": "Category of the item (e.g., كتب, أدعية)." },
+        "indexedAt": { "type": "string", "format": "date-time", "description": "When the item was indexed." }
+      },
+      "required": ["bookId", "bookTitle", "content", "originalContent", "keywords", "indexedAt"]
+    },
+    "FatwaQuestion": {
+      "title": "Fatwa Question",
+      "description": "Questions submitted by users for religious guidance.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "ID of the user who submitted the question." },
+        "question": { "type": "string", "description": "The question text." },
+        "text": { "type": "string", "description": "Redundant question text." },
+        "answer": { "type": "string", "description": "The response from the admin." },
+        "status": { "type": "string", "enum": ["pending", "answered"] },
+        "telegramMessageId": { "type": "string", "description": "ID of the message in Telegram." },
+        "timestamp": { "type": "string", "description": "Submission timestamp." },
+        "createdAt": { "type": "string", "description": "Creation timestamp." }
+      },
+      "required": ["userId", "question", "status"]
+    },
+    "TvChannel": {
+      "title": "Television Channel",
+      "description": "Live satellite broadcasting channel details.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string", "description": "Display name of the TV channel." },
+        "logoUrl": { "type": "string", "description": "HTTP URL directing to the channel logo image." },
+        "streamUrl": { "type": "string", "description": "HLS streaming URL (.m3u8) for the channel." }
+      },
+      "required": ["name", "logoUrl", "streamUrl"]
+    },
+    "TvProgram": {
+      "title": "TV Program",
+      "description": "Program schedule details for a specific time on a TV channel.",
+      "type": "object",
+      "properties": {
+        "channelId": { "type": "string", "description": "Unique ID of the television channel." },
+        "title": { "type": "string", "description": "Title of the TV program or show." },
+        "description": { "type": "string", "description": "Optional description of the program/episode." },
+        "startTime": { "type": "string", "description": "Start time of the program, styled as 'HH:MM' (e.g., '13:45') or standard full ISO string." },
+        "endTime": { "type": "string", "description": "End time of the program, styled as 'HH:MM' (e.g., '14:30') or standard full ISO string." },
+        "day": { "type": "string", "description": "Optional day of week (e.g., 'all', 'monday') or date string." }
+      },
+      "required": ["channelId", "title", "startTime", "endTime"]
+    },
+    "Book": {
+      "title": "Book",
+      "description": "A book schema for library items.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "Title of the book." },
+        "author": { "type": "string", "description": "Author of the book." },
+        "pdfUrl": { "type": "string", "description": "URL to the PDF file." }
+      },
+      "required": ["title"]
+    },
+    "Shubha": {
+      "title": "Shubha",
+      "description": "Shubha and responses schema.",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string", "description": "The title of the question or shubha." },
+        "content": { "type": "string", "description": "Detailed response or arguments." },
+        "description": { "type": "string", "description": "Optional short description." }
+      },
+      "required": ["title", "content"]
+    },
+    "ZowarPost": {
+      "title": "Zowar Post",
+      "description": "Hosting posts registered by users to host visitors.",
+      "type": "object",
+      "properties": {
+        "publisherId": { "type": "string", "description": "UID of the publisher." },
+        "publisherName": { "type": "string", "description": "Name of the publisher." },
+        "governorate": { "type": "string", "description": "Governorate of the hosting place." },
+        "city": { "type": "string", "description": "City or district of the hosting place." },
+        "placeType": { "type": "string", "enum": ["بيت", "حسينية", "موكب"] },
+        "capacity": { "type": "number", "description": "Visitor capacity." },
+        "phone": { "type": "string", "description": "Contact phone number." },
+        "notes": { "type": "string", "description": "Notes and conditions of hosting." },
+        "bookings": { "type": "array", "description": "List of user UIDs who booked." },
+        "createdAt": { "type": "string", "description": "Creation timestamp." },
+        "lat": { "type": "number", "description": "Latitude." },
+        "lng": { "type": "number", "description": "Longitude." }
+      },
+      "required": ["publisherId", "publisherName", "governorate", "city", "placeType", "capacity", "phone", "createdAt", "lat", "lng"]
+    }
+  },
+  "firestore": {
+    "search_indexes/{indexId}": {
+      "schema": "SearchIndex",
+      "description": "Collection of indexed content for searching across library and supplications."
+    },
+    "fatwa_questions/{questionId}": {
+      "schema": "FatwaQuestion",
+      "description": "Collection of religious questions submitted by users."
+    },
+    "tv_channels/{channelId}": {
+      "schema": "TvChannel",
+      "description": "Collection of live streaming television channels."
+    },
+    "tv_programs/{programId}": {
+      "schema": "TvProgram",
+      "description": "Collection of programs or show schedules linked to specific TV channels."
+    },
+    "books/{bookId}": {
+      "schema": "Book",
+      "description": "Collection of books in the library."
+    },
+    "shubuhat/{shubhaId}": {
+      "schema": "Shubha",
+      "description": "Collection of shubuhat and responses."
+    },
+    "zowar_posts/{postId}": {
+      "schema": "ZowarPost",
+      "description": "Collection of hosting posts submitted by users."
+    }
+  }
+}
