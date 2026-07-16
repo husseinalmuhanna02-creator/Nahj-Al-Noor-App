@@ -24,11 +24,15 @@ jobs:
         run: |
           npm install @capacitor/android @capacitor/cli
           npx cap add android
+      - name: Force Java 17 for Gradle
+        run: |
+          # هذا الأمر يغير إعدادات التوافق داخل ملفات المشروع فوراً
+          echo "org.gradle.java.home=$JAVA_HOME" >> android/gradle.properties
+          sed -i 's/sourceCompatibility = JavaVersion.VERSION_21/sourceCompatibility = JavaVersion.VERSION_17/g' android/app/build.gradle
+          sed -i 's/targetCompatibility = JavaVersion.VERSION_21/targetCompatibility = JavaVersion.VERSION_17/g' android/app/build.gradle
       - name: Build APK
         run: |
           cd android
-          # إجبار Gradle على استخدام Java 17 من خلال متغير المسار
-          export JAVA_HOME=$JAVA_HOME_17_X64
           ./gradlew assembleRelease
       - uses: actions/upload-artifact@v4
         with:
