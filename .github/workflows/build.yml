@@ -7,7 +7,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Setup Node
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Install dependencies
@@ -15,7 +21,7 @@ jobs:
       - name: Prepare Android
         run: |
           npm install @capacitor/cli @capacitor/core @capacitor/android
-          npx cap add android || echo "Android already added"
+          npx cap add android || echo "Already exists"
       - name: Build Web and Sync
         run: |
           npm run build
