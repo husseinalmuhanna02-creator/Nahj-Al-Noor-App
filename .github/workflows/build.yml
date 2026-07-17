@@ -20,8 +20,6 @@ jobs:
         run: npm install
       - name: Build Web
         run: npm run build
-      echo "android.useAndroidX=true" >> android/gradle.properties
-      echo "android.enableJetifier=true" >> android/gradle.properties
       - name: Setup Android Project
         run: |
           npm install @capacitor/android @capacitor/cli
