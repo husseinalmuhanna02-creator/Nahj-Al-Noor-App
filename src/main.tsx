@@ -3,7 +3,6 @@ import {StrictMode} from 'react';
 import {createRoot} from 'react-dom/client';
 import App from './App.tsx';
 import './index.css';
-import { registerSW } from 'virtual:pwa-register';
 
 // Register the service worker for PWA safely
 if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {

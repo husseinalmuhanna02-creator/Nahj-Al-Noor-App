@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">نهج النور</string>
+    <string name="title_activity_main">نهج النور</string>
+    <string name="package_name">com.husseinalmuhanna.nahjalnoor</string>
+    <string name="custom_url_scheme">com.husseinalmuhanna.nahjalnoor</string>
+</resources>
