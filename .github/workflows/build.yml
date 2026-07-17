@@ -24,6 +24,7 @@ jobs:
         run: |
           npm install @capacitor/android @capacitor/cli
           npx cap add android
+          mkdir -p android/capacitor-cordova-android-plugins/src/main/libs
       - name: Force Java 17
         run: |
           echo "org.gradle.java.home=$JAVA_HOME" > android/gradle.properties
