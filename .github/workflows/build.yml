@@ -23,7 +23,7 @@ jobs:
       - name: Setup Android Project
         run: |
           npm install @capacitor/android @capacitor/cli
-          npx cap add android
+          npx cap sync android
           mkdir -p android/capacitor-cordova-android-plugins/src/main/libs
       - name: Force Java 17
         run: |
