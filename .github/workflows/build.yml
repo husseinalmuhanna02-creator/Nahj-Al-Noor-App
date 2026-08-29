@@ -15,9 +15,10 @@ jobs:
         run: npm run build
       - name: Build APK
         run: |
-          npx cap sync android
-          cd android
-          ./gradlew assembleDebug
+         npm install @capacitor/cli @capacitor/android
+         npx cap sync android
+         cd android
+         ./gradlew assembleDebug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
