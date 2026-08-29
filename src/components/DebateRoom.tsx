@@ -3391,19 +3391,28 @@ export default function DebateRoom() {
     refreshRooms();
   }, [refreshRooms]);
 
-  // Subscribe to real-time active rooms list so ended rooms immediately disappear
-  useEffect(() => {
-    const unsubRooms = subscribeToActiveRooms((rooms) => {
-      if (rooms) {
-        const valid = rooms.filter(r => r && r.status !== 'ended' && !isDemoOrMockRoom(r));
-        setActiveRooms(valid);
-      }
-    });
+// Subscribe to real-time active rooms list from Firestore
+useEffect(() => {
+  const q = query(
+    collection(db, 'debate_rooms'),
+    orderBy('createdAt', 'desc')
+  );
 
-    return () => {
-      unsubRooms();
-    };
-  }, []);
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const roomsData = snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    })) as DebateRoomData[];
+
+    setActiveRooms(roomsData.filter(r => r.status !== 'ended'));
+    setLoadingRooms(false);
+  }, (error) => {
+    console.error("خطأ في جلب الغرف المباشرة:", error);
+    setLoadingRooms(false);
+  });
+
+  return () => unsubscribe();
+}, []);
 
   // Subscribe to active room real-time changes
   useEffect(() => {
