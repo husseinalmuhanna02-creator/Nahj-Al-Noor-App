@@ -3310,6 +3310,38 @@ export default function DebateRoom() {
     return id;
   });
 
+    const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 2 * 1024 * 1024) {
+      alert("يرجى اختيار صورة بحجم أقل من 2 ميجابايت");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      const base64Image = reader.result as string;
+      setUserAvatar(base64Image);
+      localStorage.setItem('nahj_user_avatar', base64Image);
+
+      if (userId) {
+        try {
+          await updateDoc(doc(db, 'users', userId), { photoURL: base64Image });
+        } catch (err) {
+          console.error("خطأ في حفظ الصورة:", err);
+        }
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+  
   // Temporary Profile Setup Modal Before Joining
   const [showJoinProfileModal, setShowJoinProfileModal] = useState(false);
   const [pendingJoin, setPendingJoin] = useState<{ room: DebateRoomData; role: DebateRole } | null>(null);
