@@ -3646,32 +3646,45 @@ export default function DebateRoom() {
     saveLocalRoom(newRoom);
 
     // 2. Immediately update state so UI renders the room
-    setActiveRooms(prev => [newRoom, ...prev.filter(r => r.id !== newRoom.id)]);
-    setCurrentRoom(newRoom);
-    setUserRole(joinAsHostDebater ? 'debaterA' : 'listener');
+        // 1. إضافة الغرفة مباشرة إلى Firestore لتظهر للجميع في الوقت الفعلي
+    try {
+      setIsCreatingRoom(true);
+      const roomRef = await addDoc(collection(db, 'debate_rooms'), {
+        title: newTitle.trim(),
+        topic: newTopic.trim(),
+        category: newCategory,
+        creatorName: userName || (isAr ? 'مشارك' : 'Participant'),
+        creatorUid: userId,
+        createdAt: serverTimestamp(),
+        status: 'waiting',
+        debaterA: joinAsHostDebater ? { uid: userId, name: userName || 'مشارك', avatar: userAvatar } : null,
+        debaterB: null,
+        listenersCount: 0
+      });
 
-    // 3. Close modal & reset fields
-    setShowCreateModal(false);
-    setNewTitle('');
-    setNewTopic('');
-    setNewCategory('aqeedah');
-    setIsCreatingRoom(false);
+      // 2. تعيين الغرفة الحالية وتحديث الواجهة
+      const createdRoom = {
+        id: roomRef.id,
+        title: newTitle.trim(),
+        topic: newTopic.trim(),
+        category: newCategory,
+        creatorName: userName || 'مشارك',
+        creatorUid: userId,
+        status: 'waiting'
+      } as DebateRoomData;
 
-    // 4. Background fire-and-forget network sync
-    setTimeout(() => {
-      try {
-        createDebateRoom({
-          title: newRoom.title,
-          topic: newRoom.topic,
-          category: newRoom.category,
-          creatorName: userName || (isAr ? 'مشارك' : 'Participant'),
-          creatorUid: userId,
-          asDebater: joinAsHostDebater
-        }).catch(() => {});
-      } catch {
-        // Safe ignore
-      }
-    }, 100);
+      setCurrentRoom(createdRoom);
+      setUserRole(joinAsHostDebater ? 'debaterA' : 'listener');
+    } catch (err) {
+      console.error("خطأ في إنشاء الغرفة:", err);
+    } finally {
+      setIsCreatingRoom(false);
+      setShowCreateModal(false);
+      setNewTitle('');
+      setNewTopic('');
+      setNewCategory('aqeedah');
+    }
+
   };
 
   // Leave Room Handler - 100% Synchronous & Instant
