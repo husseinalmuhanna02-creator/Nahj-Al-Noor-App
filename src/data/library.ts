@@ -1182,6 +1182,7 @@ export const libraryBooks: LibraryItem[] = [
       {
         "id": "wasail_6",
         "title": "وسائل الشيعة - الجزء 6",
+        "url": "https://drive.google.com/file/d/1sqgJLRk7VUzysRW6D-4N4OyArFB4pwaF/preview"
       },
       {
         "id": "wasail_7",

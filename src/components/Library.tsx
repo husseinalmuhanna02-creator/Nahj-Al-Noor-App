@@ -387,6 +387,7 @@ const Library: React.FC = () => {
       2: 'https://drive.google.com/file/d/1svO8RXLzSHss-rc7HDjyLQWM_K9ioOXE/preview',
       3: 'https://drive.google.com/file/d/1xXT43W_9-MMwtKazgx7WYeW6axrrMqcq/preview',
       4: 'https://drive.google.com/file/d/1brVMAW-0DLfoywcaFBMj5aL1t0ZohkZc/preview',
+      5: 'https://drive.google.com/file/d/1sqgJLRk7VUzysRW6D-4N4OyArFB4pwaF/preview',
       6: 'https://drive.google.com/file/d/1HT_82476YHmW57Ymaqss01yltOmt4lDp/preview',
       7: 'https://drive.google.com/file/d/1duZvmeL0FC6NnvUTwyZwXo9aqEYrURDg/preview',
       8: 'https://drive.google.com/file/d/18ntK7bGqXEcBKidHtHPNqecx7xf3rVxF/preview',

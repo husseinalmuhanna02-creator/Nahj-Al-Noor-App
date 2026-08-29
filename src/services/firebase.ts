@@ -1,6 +1,7 @@
 import { initializeApp, getApp, getApps } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getDatabase } from 'firebase/database';
 import config from '../../firebase-applet-config.json';
 
 // Log clear debug information for the environment
@@ -20,6 +21,9 @@ export const app = getApps().length > 0 ? getApp() : initializeApp(config);
 // Direct, simple Firestore database export without any extra arguments
 export const db = getFirestore(app);
 
+// Direct Realtime Database export
+export const rtdb = getDatabase(app);
+
 // Direct, simple Authentication export
 export const auth = getAuth(app);
 
@@ -31,3 +35,4 @@ export const isFirebaseEnabled = () => {
 export const resetFirestore = async () => {
   return db;
 };
+

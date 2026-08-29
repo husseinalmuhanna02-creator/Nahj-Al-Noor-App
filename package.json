@@ -11,12 +11,12 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@capacitor/android": "^8.4.2",
     "@capacitor/app": "^8.1.0",
-    "@capacitor/cli": "^8.4.2",
-    "@capacitor/core": "^8.4.2",
+    "@capacitor/core": "^8.4.0",
     "@capacitor/local-notifications": "^8.2.0",
     "@google/genai": "^1.29.0",
+    "@stream-io/node-sdk": "^0.8.3",
+    "@stream-io/video-react-sdk": "^1.41.0",
     "@tailwindcss/vite": "^4.1.14",
     "@vitejs/plugin-react": "^5.0.4",
     "adhan": "^4.4.3",
@@ -36,11 +36,11 @@
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
     "react-zoom-pan-pinch": "^4.0.3",
+    "recharts": "^3.10.1",
     "sharp": "^0.34.5",
     "tailwind-merge": "^3.5.0",
     "tesseract.js": "^7.0.0",
     "video.js": "^8.23.7",
-    "vite": "^6.2.3",
     "vite-plugin-pwa": "^1.2.0"
   },
   "devDependencies": {

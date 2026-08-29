@@ -11,7 +11,7 @@
 // Cache-busting trigger for clean database reload - 2026-06-05T03:31:00Z
 import { useEffect, lazy, Suspense } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Book, Compass, Home as HomeIcon, MessageCircleQuestion, Settings as SettingsIcon, Sparkles, Image as ImageIcon, Tv, Moon, Sun, HeartHandshake } from 'lucide-react';
+import { Book, Compass, Home as HomeIcon, MessageCircleQuestion, Settings as SettingsIcon, Sparkles, Image as ImageIcon, Tv, Moon, Sun, HeartHandshake, Radio } from 'lucide-react';
 import { AppProvider, useApp } from './context/AppContext';
 import Home from './components/Home';
 import Tasbih from './components/Tasbih';
@@ -23,11 +23,12 @@ import { signInAnonymously } from 'firebase/auth';
 
 // Lazy load large/heavy components for fast startup and instant navigation responsiveness
 const Library = lazy(() => import('./components/Library'));
-import Zowar from './components/Zowar';
+const Zowar = lazy(() => import('./components/Zowar'));
 const PhotoGallery = lazy(() => import('./components/PhotoGallery'));
 const Television = lazy(() => import('./components/Television'));
 const Qibla = lazy(() => import('./components/Qibla'));
 const FatwaQuestions = lazy(() => import('./components/FatwaQuestions'));
+const DebateRoom = lazy(() => import('./components/DebateRoom'));
 
 function MainLayout() {
   const { activeTab, setActiveTab, settings, updateSettings } = useApp();
@@ -52,6 +53,7 @@ function MainLayout() {
   const renderContent = () => {
     switch (activeTab) {
       case 'home': return <Home />;
+      case 'debate': return <DebateRoom />;
       case 'tasbih': return <Tasbih />;
       case 'gallery': return <PhotoGallery />;
       case 'tv': return <Television />;
@@ -66,6 +68,7 @@ function MainLayout() {
 
   const navItems = [
     { id: 'home', icon: HomeIcon, label: isAr ? 'الرئيسية' : 'Home' },
+    { id: 'debate', icon: Radio, label: isAr ? 'المناظرة' : 'Debate' },
     { id: 'tasbih', icon: Sparkles, label: isAr ? 'المسبحة' : 'Tasbih' },
     { id: 'gallery', icon: ImageIcon, label: isAr ? 'المعرض' : 'Gallery' },
     { id: 'tv', icon: Tv, label: isAr ? 'التلفزيون' : 'TV' },
