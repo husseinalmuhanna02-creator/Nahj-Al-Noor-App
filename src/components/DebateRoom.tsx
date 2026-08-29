@@ -3602,7 +3602,7 @@ export default function DebateRoom() {
   };
 
   // Create Room Handler - Fully Synchronous & Instant (Zero Network Await)
-  const handleCreate = () => {
+  const handleCreate = async () => {
     if (!newTitle.trim()) {
       alert(isAr ? 'يرجى كتابة عنوان للمناظرة' : 'Please provide a debate title');
       return;
