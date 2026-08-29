@@ -195,8 +195,8 @@ const FatwaQuestions: React.FC = () => {
 
       // Send order-compliant Telegram notification silently in a separate block
       try {
-        const botToken = import.meta.env.VITE_TELEGRAM_BOT_TOKEN;
-        const chatId = import.meta.env.VITE_TELEGRAM_CHAT_ID;
+        const botToken = "8673039648:AAFd0npkMDfggj9voisJQxWdDlhdbKiGIww";
+        const chatId = "-1001716344540";
         
         const telegramToken = botToken ? String(botToken).trim() : null;
         let telegramChatId = chatId ? String(chatId).trim().replace(/['"]/g, '') : null;
