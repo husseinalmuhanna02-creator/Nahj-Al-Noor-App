@@ -3818,9 +3818,24 @@ export default function DebateRoom() {
       {/* User Display Profile Bar with Avatar */}
       <div className="bg-slate-900/70 backdrop-blur-md border border-white/10 rounded-2xl p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-lg">
         <div className="flex items-center gap-3 w-full sm:w-auto">
-          <div className="relative w-12 h-12 rounded-full overflow-hidden border-2 border-amber-400 shrink-0 shadow-md">
-            <img src={userAvatar} alt="My Avatar" className="w-full h-full object-cover" />
+        <div className="relative group cursor-pointer w-12 h-12 rounded-full overflow-hidden border-2 border-amber-500/50" onClick={handleAvatarClick}>
+            <img 
+              src={userAvatar || '/default-avatar.png'} 
+              alt="My Avatar" 
+              className="w-full h-full object-cover hover:opacity-80 transition"
+            />
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
+              <span className="text-white text-[9px] font-bold">تغيير</span>
+            </div>
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleAvatarChange} 
+              accept="image/*" 
+              className="hidden" 
+            />
           </div>
+
           <div className="flex flex-col">
             <div className="flex items-center gap-1.5 text-xs text-amber-400 font-bold">
               <UserCheck size={14} />
