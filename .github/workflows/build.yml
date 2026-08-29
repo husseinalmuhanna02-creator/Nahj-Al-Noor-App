@@ -9,14 +9,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
       - name: Install dependencies
         run: npm install
       - name: Build Web
         run: npm run build
       - name: Build APK
         run: |
-          npm install @capacitor/android
+          npm install @capacitor/cli @capacitor/android
           npx cap sync android
+          sed -i '/org.gradle.java.home/d' android/gradle.properties
           cd android
           ./gradlew assembleDebug
       - name: Upload APK
@@ -24,3 +30,4 @@ jobs:
         with:
           name: app-debug
           path: android/app/build/outputs/apk/debug/app-debug.apk
+          
