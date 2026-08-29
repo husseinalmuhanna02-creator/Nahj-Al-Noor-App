@@ -3395,26 +3395,37 @@ export default function DebateRoom() {
 
 // Subscribe to real-time active rooms list from Firestore
 useEffect(() => {
-  const q = query(
-    collection(db, 'debate_rooms'),
-    orderBy('createdAt', 'desc')
-  );
-
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const roomsData = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    })) as DebateRoomData[];
-
-    setActiveRooms(roomsData.filter(r => r.status !== 'ended'));
+  if (!db) {
     setLoadingRooms(false);
-  }, (error) => {
-    console.error("خطأ في جلب الغرف المباشرة:", error);
-    setLoadingRooms(false);
-  });
+    return;
+  }
 
-  return () => unsubscribe();
+  try {
+    const q = query(
+      collection(db, 'debate_rooms'),
+      orderBy('createdAt', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const roomsData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as DebateRoomData[];
+
+      setActiveRooms(roomsData.filter(r => r.status !== 'ended'));
+      setLoadingRooms(false);
+    }, (error) => {
+      console.error("خطأ في جلب الغرف المباشرة:", error);
+      setLoadingRooms(false);
+    });
+
+    return () => unsubscribe();
+  } catch (err) {
+    console.error("خطأ في الاتصال بـ Firestore:", err);
+    setLoadingRooms(false);
+  }
 }, []);
+
 
   // Subscribe to active room real-time changes
   useEffect(() => {
