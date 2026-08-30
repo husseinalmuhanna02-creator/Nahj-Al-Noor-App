@@ -3664,38 +3664,19 @@ useEffect(() => {
       streamCallId: roomId
     };
 
-    // 1. Immediately persist locally
+    // 1. حفظ الغرفة محلياً
     saveLocalRoom(newRoom);
 
-    // 2. Immediately update state so UI renders the room
-        // 1. إضافة الغرفة مباشرة إلى Firestore لتظهر للجميع في الوقت الفعلي
+    // 2. إرسال الغرفة إلى Firestore فوراً لتظهر عند الجميع
     try {
-      setIsCreatingRoom(true);
-      const roomRef = await addDoc(collection(db, 'debate_rooms'), {
-        title: newTitle.trim(),
-        topic: newTopic.trim(),
-        category: newCategory,
-        creatorName: userName || (isAr ? 'مشارك' : 'Participant'),
-        creatorUid: userId,
-        createdAt: serverTimestamp(),
-        status: 'waiting',
-        debaterA: joinAsHostDebater ? { uid: userId, name: userName || 'مشارك', avatar: userAvatar } : null,
-        debaterB: null,
-        listenersCount: 0
-      });
+      await setDoc(doc(db, 'debate_rooms', roomId), newRoom);
+    } catch (err) {
+      console.error("خطأ في حفظ الغرفة في Firestore:", err);
+    }
 
-      // 2. تعيين الغرفة الحالية وتحديث الواجهة
-      const createdRoom = {
-        id: roomRef.id,
-        title: newTitle.trim(),
-        topic: newTopic.trim(),
-        category: newCategory,
-        creatorName: userName || 'مشارك',
-        creatorUid: userId,
-        status: 'waiting'
-      } as DebateRoomData;
+    setCurrentRoom(newRoom);
+    setIsCreatingRoom(false);
 
-      setCurrentRoom(createdRoom);
       setUserRole(joinAsHostDebater ? 'debaterA' : 'listener');
     } catch (err) {
       console.error("خطأ في إنشاء الغرفة:", err);
