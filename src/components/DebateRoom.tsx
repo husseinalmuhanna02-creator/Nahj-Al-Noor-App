@@ -3681,7 +3681,8 @@ useEffect(() => {
       setNewTopic('');
       setNewCategory('aqeedah');
     }
-
+};
+  
 
   // Leave Room Handler - 100% Synchronous & Instant
   const handleLeave = () => {
