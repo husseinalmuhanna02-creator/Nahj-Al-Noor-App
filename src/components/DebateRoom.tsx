@@ -3932,3 +3932,10 @@ useEffect(() => {
     </div>
   );
 }
+export default function DebateRoom(props: any) {
+  return (
+    <DebateErrorBoundary>
+      <DebateRoomContent {...props} />
+    </DebateErrorBoundary>
+  );
+}
