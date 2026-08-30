@@ -1288,8 +1288,8 @@ function DebateStage({
               <span>{isAr ? 'إنهاء المناظرة' : 'End Debate'}</span>
             </button>
           )}
+</div>
 </header>
-                                               
 {/* 1. الشريط العلوي المبسط Header */}
 <header className="flex items-center justify-between p-4 bg-slate-900/90 border-b border-slate-800">
   <div>
