@@ -99,6 +99,38 @@ import {
   subscribeToDebateLiveReactions
 } from '../services/debateService';
 import type { DebateRoomData, DebateRole, DebaterProfile, SharedDebateImage, DebateCategory, LiveReactionPayload } from '../types';
+class DebateErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: any }> {
+  state = { hasError: false, error: null };
+
+  static getDerivedStateFromError(error: any) {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: any, errorInfo: any) {
+    console.error("Debate Room Render Crash:", error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-6 bg-slate-950 text-white min-h-screen flex flex-col items-center justify-center font-mono">
+          <div className="p-5 bg-red-950/80 border border-red-500/60 rounded-2xl max-w-lg w-full text-right shadow-2xl">
+            <h2 className="text-red-400 font-bold text-base mb-2">⚠️ حدث خطأ أثناء فتح الغرفة</h2>
+            <p className="text-xs text-red-200 bg-black/60 p-3 rounded-xl border border-red-900/50 break-words font-mono dir-ltr text-left">
+              {this.state.error?.stack || this.state.error?.toString() || 'React Execution Error'}
+            </p>
+            <button 
+              onClick={() => window.location.reload()} 
+              className="mt-4 w-full py-2.5 bg-red-600 hover:bg-red-500 text-white font-sans font-bold text-xs rounded-xl transition-all">
+              إعادة تحميل الغرفة
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 // ==========================================
 // Category Definitions & Visual Metadata
