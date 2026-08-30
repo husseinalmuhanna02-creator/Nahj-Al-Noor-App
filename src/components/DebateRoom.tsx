@@ -3636,7 +3636,7 @@ useEffect(() => {
     const newRoom: DebateRoomData = {
       id: roomId,
       title: newTitle.trim(),
-      topic: newTopic.trim() || undefined,
+      topic: newTopic.trim() || null,
       category: newCategory,
       status: 'waiting',
       createdAt: Date.now(),
