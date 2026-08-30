@@ -2614,7 +2614,7 @@ function DebateStage({
 // ==========================================
 // Outer Root Debate Manager (Lobby + StreamVideo Client)
 // ==========================================
-export default function DebateRoom() {
+  function DebateRoomContent() {
   const { settings } = useApp();
   const isAr = settings.language === 'ar';
 
