@@ -3670,16 +3670,10 @@ useEffect(() => {
     // 2. إرسال الغرفة إلى Firestore فوراً لتظهر عند الجميع
     try {
       await setDoc(doc(db, 'debate_rooms', roomId), newRoom);
-    } catch (err) {
-      console.error("خطأ في حفظ الغرفة في Firestore:", err);
-    }
-
-    setCurrentRoom(newRoom);
-    setIsCreatingRoom(false);
-
+      setCurrentRoom(newRoom);
       setUserRole(joinAsHostDebater ? 'debaterA' : 'listener');
     } catch (err) {
-      console.error("خطأ في إنشاء الغرفة:", err);
+      console.error("خطأ في حفظ الغرفة في Firestore:", err);
     } finally {
       setIsCreatingRoom(false);
       setShowCreateModal(false);
@@ -3688,7 +3682,6 @@ useEffect(() => {
       setNewCategory('aqeedah');
     }
 
-  };
 
   // Leave Room Handler - 100% Synchronous & Instant
   const handleLeave = () => {
