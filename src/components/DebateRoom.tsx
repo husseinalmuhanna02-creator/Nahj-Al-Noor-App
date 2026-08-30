@@ -1289,799 +1289,108 @@ function DebateStage({
             </button>
           )}
 
-          {/* Leave / Exit Button */}
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onLeaveRoom();
-            }}
-            className="px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white border border-rose-400/40 flex items-center gap-2 text-xs font-black shadow-lg shadow-rose-950/40 transition-all active:scale-95 cursor-pointer shrink-0"
-            title={isAr ? 'مغادرة الغرفة والعودة للصالة' : 'Leave Room & Return to Lobby'}
-          >
-            <LogOut size={16} />
-            <span>{isAr ? 'مغادرة الغرفة' : 'Leave Room'}</span>
-          </button>
-        </div>
-      </header>
+{/* 1. الشريط العلوي المبسط Header */}
+<header className="flex items-center justify-between p-4 bg-slate-900/90 border-b border-slate-800">
+  <div>
+    <h2 className="text-base font-bold text-white">{currentRoom?.title || (isAr ? 'غرفة المناظرة' : 'Debate Room')}</h2>
+    <span className="text-xs text-emerald-400 font-medium">● {isAr ? 'بث مباشر' : 'Live'}</span>
+  </div>
+  <button 
+    onClick={onLeaveRoom}
+    className="px-3 py-1.5 text-xs bg-red-600/20 hover:bg-red-600/30 text-red-400 rounded-xl border border-red-500/30 transition-all flex items-center gap-1">
+    <LogOut size={14} />
+    <span>{isAr ? 'مغادرة الغرفة' : 'Leave Room'}</span>
+  </button>
+</header>
 
-      {/* Real-Time Live Reaction Alerts & Live Pulse Notification Strip */}
-      <div className="w-full flex flex-col gap-2 relative z-30">
-        <div className="bg-slate-900/85 backdrop-blur-xl rounded-2xl p-2.5 sm:px-4 sm:py-2.5 border border-white/10 flex flex-wrap items-center justify-between gap-2.5 shadow-lg">
-          <div className="flex items-center gap-2 text-xs font-bold">
-            <span className="relative flex h-2.5 w-2.5">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-            </span>
-            <span className="flex items-center gap-1.5 text-amber-300">
-              <Sparkles size={14} className="text-amber-400 animate-pulse" />
-              <span>{isAr ? 'نظام الإشعارات والتفاعل اللحظي المباشر' : 'Live Real-Time Reaction Notifications'}</span>
-            </span>
-            {reactionAlerts.length > 0 && (
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-mono font-black bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
-                {reactionAlerts.length} {isAr ? 'جديد' : 'new'}
-              </span>
-            )}
-          </div>
+{/* 2. منطقة المناظرين (جنباً إلى جنب) */}
+<div className="grid grid-cols-2 gap-3 p-4">
+  
+  {/* المناظر الأول (الطرف أ) */}
+  <div className={`flex flex-col items-center p-4 rounded-2xl bg-slate-800/60 border ${currentTurn === 'debaterA' ? 'border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/50' : 'border-slate-700/60'}`}>
+    <div className="relative">
+      <img 
+        src={debaterA?.avatar || PRESET_AVATARS[0].url} 
+        className={`w-20 h-20 rounded-full object-cover border-2 ${currentTurn === 'debaterA' ? 'border-emerald-400' : 'border-slate-600'}`} 
+      />
+      <span className={`absolute bottom-0 right-0 p-1.5 rounded-full border-2 border-slate-900 ${currentTurn === 'debaterA' ? 'bg-emerald-500 text-slate-950 animate-pulse' : 'bg-red-500 text-white'}`}>
+        {currentTurn === 'debaterA' ? <Mic size={12} /> : <MicOff size={12} />}
+      </span>
+    </div>
 
-          {/* Quick Audio & Toast Toggle Controls */}
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setIsReactionSoundEnabled(prev => !prev)}
-              className={`px-3 py-1 rounded-xl text-[11px] font-black border flex items-center gap-1.5 transition-all cursor-pointer shadow-sm ${
-                isReactionSoundEnabled
-                  ? 'bg-emerald-500/25 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/35'
-                  : 'bg-white/5 text-white/40 border-white/10 hover:text-white'
-              }`}
-              title={isAr ? (isReactionSoundEnabled ? 'كتم تنبيهات التفاعل الصوتية' : 'تفعيل النغمات الصوتية للتفاعل') : 'Toggle Reaction Audio Cue'}
-            >
-              {isReactionSoundEnabled ? <Volume2 size={13} className="text-emerald-400" /> : <VolumeX size={13} />}
-              <span>{isReactionSoundEnabled ? (isAr ? 'صوت التفاعل نشط' : 'Sound On') : (isAr ? 'الصوت مكتوم' : 'Muted')}</span>
-            </button>
+    <h3 className="mt-2 text-sm font-bold text-white truncate max-w-full">{debaterA?.name || (isAr ? 'الطرف أ' : 'Debater A')}</h3>
+    
+    <div className="mt-1.5">
+      {currentTurn === 'debaterA' ? (
+        <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+          ⏱️ {Math.floor((turnSecondsLeft || 0) / 60)}:{('0' + ((turnSecondsLeft || 0) % 60)).slice(-2)}
+        </span>
+      ) : (
+        <span className="px-2 py-0.5 rounded-full text-xs text-slate-400 bg-slate-700/40">
+          {isAr ? 'مكتوم' : 'Muted'}
+        </span>
+      )}
+    </div>
 
-            <button
-              type="button"
-              onClick={() => setIsReactionAlertsVisible(prev => !prev)}
-              className={`px-3 py-1 rounded-xl text-[11px] font-black border flex items-center gap-1.5 transition-all cursor-pointer shadow-sm ${
-                isReactionAlertsVisible
-                  ? 'bg-amber-500/25 text-amber-300 border-amber-500/40 hover:bg-amber-500/35'
-                  : 'bg-white/5 text-white/40 border-white/10 hover:text-white'
-              }`}
-              title={isAr ? 'إظهار / إخفاء لافتات الإشعارات' : 'Toggle Live Toast Alerts'}
-            >
-              <Bell size={13} className={reactionAlerts.length > 0 ? 'animate-bounce text-amber-400' : ''} />
-              <span>{isReactionAlertsVisible ? (isAr ? 'الإشعارات ظاهرة' : 'Toasts On') : (isAr ? 'مخفية' : 'Hidden')}</span>
-            </button>
-          </div>
+    <button 
+      onClick={() => handleSendReaction && handleSendReaction('debaterA')}
+      className="mt-3 w-full py-2 bg-slate-700/50 hover:bg-emerald-600/20 text-emerald-400 text-xs font-bold rounded-xl border border-slate-600/50 flex items-center justify-center gap-1.5 transition-all">
+      👏 {isAr ? 'تأييد وتفاعل' : 'React'}
+    </button>
+  </div>
+
+  {/* المناظر الثاني (الطرف ب) */}
+  <div className={`flex flex-col items-center p-4 rounded-2xl bg-slate-800/60 border ${currentTurn === 'debaterB' ? 'border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/50' : 'border-slate-700/60'}`}>
+    {(room?.debaterB || debaterB) ? (
+      <>
+        <div className="relative">
+          <img 
+            src={(room?.debaterB || debaterB)?.avatar || PRESET_AVATARS[0].url} 
+            className={`w-20 h-20 rounded-full object-cover border-2 ${currentTurn === 'debaterB' ? 'border-emerald-400' : 'border-slate-600'}`} 
+          />
+          <span className={`absolute bottom-0 right-0 p-1.5 rounded-full border-2 border-slate-900 ${currentTurn === 'debaterB' ? 'bg-emerald-500 text-slate-950 animate-pulse' : 'bg-red-500 text-white'}`}>
+            {currentTurn === 'debaterB' ? <Mic size={12} /> : <MicOff size={12} />}
+          </span>
         </div>
 
-        {/* Live Reaction Toast Stack (Appears smoothly for 4.5s) */}
-        {isReactionAlertsVisible && (
-          <div className="flex flex-col gap-2 pointer-events-auto">
-            <AnimatePresence>
-              {reactionAlerts.map((alert) => {
-                const isTargetedToMe = 
-                  (currentUserRole === 'debaterA' && alert.targetRole === 'debaterA') ||
-                  (currentUserRole === 'debaterB' && alert.targetRole === 'debaterB');
+        <h3 className="mt-2 text-sm font-bold text-white truncate max-w-full">{(room?.debaterB || debaterB)?.name || (isAr ? 'الطرف ب' : 'Debater B')}</h3>
 
-                return (
-                  <motion.div
-                    key={alert.id}
-                    initial={{ opacity: 0, y: -15, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.9, x: isAr ? 50 : -50 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className={`p-3 rounded-2xl border flex items-center justify-between gap-3 shadow-2xl backdrop-blur-xl ${
-                      isTargetedToMe
-                        ? alert.isNegative
-                          ? 'bg-gradient-to-r from-rose-950/95 via-slate-900/95 to-slate-900/95 border-rose-400 ring-2 ring-rose-500/70 shadow-rose-950/90'
-                          : 'bg-gradient-to-r from-emerald-950/95 via-slate-900/95 to-slate-900/95 border-emerald-400 ring-2 ring-emerald-500/70 shadow-emerald-950/90'
-                        : alert.isNegative
-                          ? 'bg-slate-900/95 border-rose-500/40 text-rose-200 shadow-rose-950/30'
-                          : 'bg-slate-900/95 border-emerald-500/40 text-emerald-200 shadow-emerald-950/30'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      {/* Emoji Icon Pill */}
-                      <div className={`w-10 h-10 rounded-2xl flex items-center justify-center text-2xl shrink-0 border ${
-                        alert.isNegative
-                          ? 'bg-rose-500/20 border-rose-500/40 text-rose-300'
-                          : 'bg-emerald-500/20 border-emerald-500/40 text-emerald-300'
-                      }`}>
-                        <span className="drop-shadow animate-pulse">{alert.emoji}</span>
-                      </div>
-
-                      {/* Notification Content */}
-                      <div className="flex flex-col min-w-0 text-right">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          {isTargetedToMe ? (
-                            <span className="px-2 py-0.5 rounded-md text-[10px] font-black bg-amber-400 text-slate-950 animate-pulse">
-                              ⭐ {isAr ? 'إشعار مباشر لك' : 'Direct Reaction to You'}
-                            </span>
-                          ) : (
-                            <span className={`px-2 py-0.5 rounded-md text-[10px] font-black ${
-                              alert.isNegative 
-                                ? 'bg-rose-500/30 text-rose-300 border border-rose-500/40' 
-                                : 'bg-emerald-500/30 text-emerald-300 border border-emerald-500/40'
-                            }`}>
-                              {alert.isNegative 
-                                ? (isAr ? '💔 نقد واعتراض' : 'Dispute') 
-                                : (isAr ? '💚 تشجيع وتأييد' : 'Support')}
-                            </span>
-                          )}
-
-                          <span className="text-xs font-black text-white truncate">
-                            {alert.targetDebaterName}
-                          </span>
-
-                          <span className="text-[10px] text-white/50">
-                            {isAr ? `من: ${alert.senderName}` : `by: ${alert.senderName}`}
-                          </span>
-                        </div>
-
-                        <p className="text-xs font-bold text-white/90 mt-0.5 truncate">
-                          {isAr 
-                            ? `تفاعل جديد: "${alert.label}" ${alert.emoji} لتقييم الحجة والدليل في المناظرة.` 
-                            : `New reaction: "${alert.label}" ${alert.emoji} during the live session.`}
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Dismiss Button */}
-                    <button
-                      type="button"
-                      onClick={() => setReactionAlerts(prev => prev.filter(a => a.id !== alert.id))}
-                      className="p-1.5 text-white/40 hover:text-white rounded-xl hover:bg-white/10 transition-all shrink-0 cursor-pointer text-xs"
-                      title={isAr ? 'إغلاق الإشعار' : 'Dismiss'}
-                    >
-                      ✕
-                    </button>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-          </div>
-        )}
-      </div>
-
-      {/* Main Debate Stage Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-        
-        {/* Left/Debater A Battle Card */}
-        <div className={`lg:col-span-4 rounded-3xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-500 relative overflow-hidden backdrop-blur-xl border ${
-          lastDebaterAAlert
-            ? lastDebaterAAlert.isNegative
-              ? 'bg-slate-900/95 border-rose-400 ring-4 ring-rose-500/50 shadow-[0_0_35px_rgba(244,63,94,0.35)]'
-              : 'bg-slate-900/95 border-emerald-400 ring-4 ring-emerald-500/50 shadow-[0_0_35px_rgba(16,185,129,0.35)]'
-            : isDebaterAActive && room.status === 'active'
-              ? 'bg-gradient-to-b from-emerald-950/70 to-slate-900/90 border-emerald-500/60 shadow-[0_0_30px_rgba(16,185,129,0.25)] ring-2 ring-emerald-500/40'
-              : 'bg-slate-900/70 border-white/10 opacity-80'
-        }`}>
-          {/* Active Speaker Ribbon */}
-          {isDebaterAActive && room.status === 'active' && (
-            <div className="absolute top-0 right-0 left-0 bg-emerald-500 text-slate-950 text-[10px] font-black text-center py-1 flex items-center justify-center gap-1.5 shadow-md">
-              <Mic size={12} className="animate-bounce" />
-              <span>{isAr ? 'المتحدث الحالي • المايك مفتوح' : 'Active Speaker • Mic Enabled'}</span>
-            </div>
-          )}
-
-          <div className="mt-4 flex flex-col items-center text-center">
-            {/* Avatar & Voice Waves Ring */}
-            <div className="relative mb-3">
-              {/* Floating Reaction Alert Badge on Avatar */}
-              <AnimatePresence>
-                {lastDebaterAAlert && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: -16 }}
-                    exit={{ opacity: 0, scale: 0.8, y: -26 }}
-                    transition={{ duration: 0.3, type: 'spring' }}
-                    className={`absolute -top-4 left-1/2 -translate-x-1/2 z-30 px-2.5 py-1 rounded-full text-[11px] font-black flex items-center gap-1 shadow-2xl border whitespace-nowrap ${
-                      lastDebaterAAlert.isNegative
-                        ? 'bg-rose-600 text-white border-rose-300 ring-2 ring-rose-500/60 shadow-rose-950/90'
-                        : 'bg-emerald-600 text-white border-emerald-300 ring-2 ring-emerald-500/60 shadow-emerald-950/90'
-                    }`}
-                  >
-                    <span className="text-sm animate-bounce">{lastDebaterAAlert.emoji}</span>
-                    <span>{lastDebaterAAlert.label}</span>
-                    <span className="text-[10px] opacity-80 font-mono">+1</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden p-1 border-2 transition-all duration-300 ${
-                lastDebaterAAlert
-                  ? lastDebaterAAlert.isNegative
-                    ? 'border-rose-400 scale-110 shadow-[0_0_25px_rgba(244,63,94,0.6)]'
-                    : 'border-emerald-400 scale-110 shadow-[0_0_25px_rgba(52,211,153,0.6)]'
-                  : isDebaterAActive && room.status === 'active'
-                    ? 'border-emerald-400 scale-105 shadow-[0_0_20px_rgba(52,211,153,0.5)]'
-                    : 'border-white/20'
-              }`}>
-                <img 
-                  src={room.debaterA?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'} 
-                  alt="Debater A" 
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-
-              {/* Status Badge Icon */}
-              <div className={`absolute bottom-0 right-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shadow-lg border-2 border-slate-900 ${
-                isDebaterAActive && room.status === 'active'
-                  ? 'bg-emerald-500 text-slate-950 animate-pulse'
-                  : 'bg-rose-600 text-white'
-              }`}>
-                {isDebaterAActive && room.status === 'active' ? <Mic size={14} /> : <MicOff size={14} />}
-              </div>
-            </div>
-
-            <span className="px-3 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/70 mb-1">
-              {isAr ? 'المناظر الأول (الطرف أ)' : 'Debater A'}
+        <div className="mt-1.5">
+          {currentTurn === 'debaterB' ? (
+            <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+              ⏱️ {Math.floor((turnSecondsLeft || 0) / 60)}:{('0' + ((turnSecondsLeft || 0) % 60)).slice(-2)}
             </span>
-            <h2 className="text-base sm:text-lg font-black text-white">
-              {room.debaterA?.name || (isAr ? 'في انتظار انضمام المناظر...' : 'Waiting for Debater A...')}
-            </h2>
-            {room.debaterA?.uid === currentUserId && (
-              <span className="text-[10px] text-amber-400 font-bold mt-0.5">({isAr ? 'أنت' : 'You'})</span>
-            )}
-          </div>
-
-          {/* Real-time Audio Level Waves */}
-          {isDebaterAActive && room.status === 'active' ? (
-            <div className="my-4 bg-black/40 rounded-2xl p-3 border border-emerald-500/30 flex flex-col items-center gap-2">
-              <div className="flex items-center gap-1.5 h-6">
-                {[40, 70, 90, 60, 100, 80, 50, 85, 65, 95].map((height, i) => (
-                  <motion.div
-                    key={i}
-                    animate={{ height: `${(audioLevel * height) / 100}%` }}
-                    transition={{ duration: 0.15, repeat: Infinity, repeatType: "reverse" }}
-                    className="w-1.5 bg-emerald-400 rounded-full"
-                    style={{ minHeight: '4px', maxHeight: '24px' }}
-                  />
-                ))}
-              </div>
-              <span className="text-[10px] text-emerald-400 font-mono font-bold">
-                {isAr ? 'البث الصوتي المباشر نشط' : 'Live Audio Stream Transmitting'}
-              </span>
-            </div>
           ) : (
-            <div className="my-4 bg-black/30 rounded-2xl p-3 border border-white/5 flex items-center justify-center gap-2 text-white/40 text-xs">
-              <MicOff size={14} />
-              <span>{isAr ? 'المايك مكتوم حتى يبدأ الدور' : 'Mic muted until turn begins'}</span>
-            </div>
-          )}
-
-          {/* Dedicated Live Audience Reactions & Encouragement / Dispute for Debater A */}
-          <div className="mt-3 bg-slate-950/70 rounded-2xl p-3 border border-white/10 flex flex-col gap-2.5 shadow-inner">
-            {/* Support & Dispute Metrics Bar */}
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-[10px] sm:text-[11px]">
-                <span className="font-black text-emerald-400 flex items-center gap-1">
-                  <span>💚 {isAr ? 'تأييد وتشجيع' : 'Support'}:</span>
-                  <span className="font-mono font-black">{totalDebaterAPositive}</span>
-                  <span className="text-[10px] text-emerald-400/80">({posPercentA}%)</span>
-                </span>
-                <span className="font-black text-rose-400 flex items-center gap-1">
-                  <span>💔 {isAr ? 'نقد واعتراض' : 'Dispute'}:</span>
-                  <span className="font-mono font-black">{totalDebaterANegative}</span>
-                  <span className="text-[10px] text-rose-400/80">({negPercentA}%)</span>
-                </span>
-              </div>
-              
-              {/* Visual Support vs Dispute Ratio Track */}
-              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden flex">
-                <div 
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500" 
-                  style={{ width: `${posPercentA}%` }} 
-                />
-                <div 
-                  className="h-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-500" 
-                  style={{ width: `${negPercentA}%` }} 
-                />
-              </div>
-            </div>
-
-            {/* Category Tab Selector */}
-            <div className="flex items-center justify-between bg-black/40 p-1 rounded-xl border border-white/5 text-[10px] font-black">
-              <button
-                type="button"
-                onClick={() => setDebaterATab('all')}
-                className={`flex-1 py-1 rounded-lg transition-all text-center ${
-                  debaterATab === 'all' 
-                    ? 'bg-white/15 text-white shadow-sm' 
-                    : 'text-white/50 hover:text-white'
-                }`}
-              >
-                {isAr ? '🌐 الكل' : 'All'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setDebaterATab('positive')}
-                className={`flex-1 py-1 rounded-lg transition-all text-center flex items-center justify-center gap-1 ${
-                  debaterATab === 'positive' 
-                    ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 shadow-sm' 
-                    : 'text-white/50 hover:text-emerald-400'
-                }`}
-              >
-                <span>👍</span>
-                <span>{isAr ? 'تشجيع' : 'Support'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setDebaterATab('negative')}
-                className={`flex-1 py-1 rounded-lg transition-all text-center flex items-center justify-center gap-1 ${
-                  debaterATab === 'negative' 
-                    ? 'bg-rose-500/25 text-rose-300 border border-rose-500/30 shadow-sm' 
-                    : 'text-white/50 hover:text-rose-400'
-                }`}
-              >
-                <span>👎</span>
-                <span>{isAr ? 'نقد واعتراض' : 'Dispute'}</span>
-              </button>
-            </div>
-
-            {/* Interactive Reaction Buttons Matrix */}
-            <div className="grid grid-cols-3 gap-1.5 max-h-40 overflow-y-auto pr-0.5 scrollbar-thin scrollbar-thumb-white/10">
-              {(debaterATab === 'all' || debaterATab === 'positive') && POSITIVE_DEBATER_REACTIONS.map((item) => {
-                const count = debaterAReactions[item.emoji] || 0;
-                return (
-                  <button
-                    key={`debA_pos_${item.emoji}`}
-                    type="button"
-                    onClick={() => handleSendTargetedReaction('debaterA', item.emoji, isAr ? item.labelAr : item.labelEn, false)}
-                    className="group relative py-1.5 px-2 bg-emerald-950/40 hover:bg-emerald-600/30 active:scale-90 rounded-xl border border-emerald-500/20 hover:border-emerald-400/60 flex items-center justify-between transition-all cursor-pointer shadow-sm"
-                    title={`${isAr ? item.labelAr : item.labelEn} (${isAr ? 'تشجيع وتأييد للمناظر أ' : 'Support Debater A'})`}
-                  >
-                    <span className="text-sm group-hover:scale-125 transition-transform drop-shadow">{item.emoji}</span>
-                    <span className="text-[9px] font-bold text-emerald-300/90 truncate max-w-[42px]">{isAr ? item.shortAr : item.labelEn}</span>
-                    <span className="text-[10px] font-black font-mono text-emerald-400 bg-emerald-900/70 px-1 rounded-md min-w-[16px] text-center">
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-
-              {(debaterATab === 'all' || debaterATab === 'negative') && NEGATIVE_DEBATER_REACTIONS.map((item) => {
-                const count = debaterAReactions[item.emoji] || 0;
-                return (
-                  <button
-                    key={`debA_neg_${item.emoji}`}
-                    type="button"
-                    onClick={() => handleSendTargetedReaction('debaterA', item.emoji, isAr ? item.labelAr : item.labelEn, true)}
-                    className="group relative py-1.5 px-2 bg-rose-950/40 hover:bg-rose-600/30 active:scale-90 rounded-xl border border-rose-500/20 hover:border-rose-400/60 flex items-center justify-between transition-all cursor-pointer shadow-sm"
-                    title={`${isAr ? item.labelAr : item.labelEn} (${isAr ? 'اعتراض ونقد للمناظر أ' : 'Dispute Debater A'})`}
-                  >
-                    <span className="text-sm group-hover:scale-125 transition-transform drop-shadow">{item.emoji}</span>
-                    <span className="text-[9px] font-bold text-rose-300/90 truncate max-w-[42px]">{isAr ? item.shortAr : item.labelEn}</span>
-                    <span className="text-[10px] font-black font-mono text-rose-400 bg-rose-900/70 px-1 rounded-md min-w-[16px] text-center">
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Quick Slot Action if Empty */}
-          {!room.debaterA && (
-            <button
-              onClick={() => handleTakeDebaterSlot('debaterA')}
-              className="w-full mt-2 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl text-xs transition-all cursor-pointer"
-            >
-              {isAr ? 'احجز مقعد المناظر أ' : 'Take Debater A Seat'}
-            </button>
+            <span className="px-2 py-0.5 rounded-full text-xs text-slate-400 bg-slate-700/40">
+              {isAr ? 'مكتوم' : 'Muted'}
+            </span>
           )}
         </div>
 
-        {/* Center: Strict 3-Minute Turn Clock & Shared Gallery Image */}
-        <div className="lg:col-span-4 flex flex-col gap-4">
+        <button 
+          onClick={() => handleSendReaction && handleSendReaction('debaterB')}
+          className="mt-3 w-full py-2 bg-slate-700/50 hover:bg-emerald-600/20 text-emerald-400 text-xs font-bold rounded-xl border border-slate-600/50 flex items-center justify-center gap-1.5 transition-all">
+          👏 {isAr ? 'تأييد وتفاعل' : 'React'}
+        </button>
+      </>
+    ) : (
+      /* المقعد فارغ */
+      <div className="flex flex-col items-center justify-center h-full py-4 text-center">
+        <div className="w-16 h-16 rounded-full bg-slate-700/30 border border-dashed border-slate-500 flex items-center justify-center text-slate-400 mb-2">
+          <Users size={24} />
+        </div>
+        <p className="text-xs text-slate-400 mb-3">{isAr ? 'المقعد فارغ' : 'Seat Empty'}</p>
+        <button 
+          onClick={() => handleTakeDebaterSlot && handleTakeDebaterSlot('debaterB')}
+          className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-lg transition-all">
+          {isAr ? 'احجز المقعد' : 'Take Seat'}
+        </button>
+      </div>
+    )}
+  </div>
+
+</div>
           
-          {/* Turn Timer & Status HUD Card */}
-          <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 sm:p-5 shadow-2xl flex flex-col items-center text-center relative overflow-hidden">
-            {/* Round Badge */}
-            <div className="flex items-center justify-between w-full mb-3">
-              <span className="text-[10px] font-bold text-white/50 bg-white/5 px-2.5 py-1 rounded-full">
-                {isAr ? `الجولة ${room.roundNumber}` : `Round ${room.roundNumber}`}
-              </span>
-              <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-2.5 py-1 rounded-full border border-amber-500/20">
-                {isAr ? 'قاعدة 3 دقائق لكل متحدث' : 'Strict 3-Min Rule'}
-              </span>
-            </div>
-
-            {/* Circular 3-Min Gauge Display */}
-            <div className="relative w-32 h-32 sm:w-36 sm:h-36 flex items-center justify-center my-1">
-              <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  className="stroke-white/10"
-                  strokeWidth="8"
-                  fill="transparent"
-                />
-                <circle
-                  cx="50"
-                  cy="50"
-                  r="42"
-                  className={`transition-all duration-500 ${
-                    turnRemainingSeconds <= 30 
-                      ? 'stroke-rose-500 animate-pulse' 
-                      : isCurrentDebaterTurn 
-                        ? 'stroke-emerald-400' 
-                        : 'stroke-amber-400'
-                  }`}
-                  strokeWidth="8"
-                  strokeDasharray={264}
-                  strokeDashoffset={264 - (264 * turnProgressPercent) / 100}
-                  strokeLinecap="round"
-                  fill="transparent"
-                />
-              </svg>
-
-              <div className="absolute flex flex-col items-center">
-                <span className={`text-2xl sm:text-3xl font-mono font-black tracking-wider ${
-                  turnRemainingSeconds <= 30 ? 'text-rose-400 animate-bounce' : 'text-white'
-                }`}>
-                  {formatTime(turnRemainingSeconds)}
-                </span>
-                <span className="text-[10px] text-white/50 font-bold uppercase tracking-wider mt-0.5">
-                  {isAr ? 'متبقي من الدور' : 'Turn Left'}
-                </span>
-              </div>
-            </div>
-
-            {/* Microphone State Banner Required by User */}
-            <div className={`w-full py-2.5 px-3 rounded-2xl text-xs font-black flex items-center justify-center gap-2 mt-3 shadow-md transition-all ${
-              currentUserRole === 'listener'
-                ? 'bg-indigo-950/80 text-indigo-200 border border-indigo-500/30'
-                : isCurrentDebaterTurn
-                  ? 'bg-emerald-500 text-slate-950 ring-2 ring-emerald-400 shadow-emerald-500/20'
-                  : 'bg-rose-950/80 text-rose-300 border border-rose-500/30'
-            }`}>
-              {currentUserRole === 'listener' ? (
-                <>
-                  <Headphones size={15} />
-                  <span>{isAr ? 'أنت مستمع في هذه المناظرة 🎧' : 'You are a listener 🎧'}</span>
-                </>
-              ) : isCurrentDebaterTurn ? (
-                <>
-                  <Mic size={15} className="animate-pulse" />
-                  <span>{isAr ? 'دورك الآن في الحديث 🎤' : 'Your turn to speak 🎤'}</span>
-                </>
-              ) : (
-                <>
-                  <MicOff size={15} />
-                  <span>{isAr ? 'المايك مكتوم - دور المناظر الآخر 🔇' : 'Muted - Opponent Turn 🔇'}</span>
-                </>
-              )}
-            </div>
-
-            {/* Pass Turn Button (If debater finishes earlier than 3 minutes) */}
-            {isCurrentDebaterTurn && room.status === 'active' && (
-              <button
-                onClick={handlePassTurnManually}
-                className="mt-3 w-full py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-bold rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer border border-white/10"
-              >
-                <ArrowRight size={14} />
-                <span>{isAr ? 'أنهيت حديثي (تسليم المايك للطرف الآخر)' : 'Finish Early & Pass Mic'}</span>
-              </button>
-            )}
-
-            {/* Start Session Button if waiting */}
-            {room.status === 'waiting' && (
-              <button
-                onClick={handleStartSession}
-                className="mt-3 w-full py-3 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-black rounded-xl flex items-center justify-center gap-2 shadow-lg transition-all active:scale-95 cursor-pointer"
-              >
-                <Play size={16} />
-                <span>{isAr ? 'بدء المناظرة وتشغيل العداد' : 'Start Debate & Timers'}</span>
-              </button>
-            )}
-          </div>
-
-          {/* Central Shared Gallery Image Area */}
-          <div className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-3xl p-4 shadow-2xl flex flex-col gap-3 min-h-[220px]">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-black text-amber-400">
-                <ImageIcon size={15} />
-                <span>{isAr ? 'الصورة التوضيحية المشتركة (المعرض)' : 'Live Shared Image (Gallery)'}</span>
-              </div>
-
-              {/* Share Image Button (Only for Debater A or Debater B) */}
-              {canShareImage && (
-                <div className="flex items-center gap-1.5">
-                  {room.currentSharedImage && (
-                    <button
-                      onClick={handleRemoveImage}
-                      className="p-1.5 rounded-lg bg-rose-500/20 hover:bg-rose-500/40 text-rose-300 transition-all text-xs flex items-center gap-1 cursor-pointer"
-                      title={isAr ? 'إزالة الصورة' : 'Remove Image'}
-                    >
-                      <X size={13} />
-                      <span className="hidden sm:inline">{isAr ? 'إزالة' : 'Remove'}</span>
-                    </button>
-                  )}
-                  <button
-                    onClick={() => setShowImageModal(true)}
-                    className="px-2.5 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 transition-all text-xs font-bold flex items-center gap-1 cursor-pointer active:scale-95"
-                  >
-                    <Upload size={13} />
-                    <span>{room.currentSharedImage ? (isAr ? 'تغيير الصورة' : 'Replace') : (isAr ? 'مشاركة صورة' : 'Share Image')}</span>
-                  </button>
-                </div>
-              )}
-            </div>
-
-            {/* Display Shared Image or Empty Placeholder */}
-            {room.currentSharedImage ? (
-              <div className="relative group rounded-2xl overflow-hidden bg-black/60 border border-amber-500/30 flex flex-col items-center justify-center">
-                <img
-                  src={room.currentSharedImage.url}
-                  alt={room.currentSharedImage.caption || 'Shared debate proof'}
-                  onClick={() => setLightboxImage(room.currentSharedImage!.url)}
-                  className="w-full max-h-52 object-contain rounded-xl cursor-pointer transition-transform hover:scale-105"
-                />
-
-                {/* Shared By Badge & Caption */}
-                <div className="w-full bg-black/80 backdrop-blur-md p-2 text-center flex flex-col gap-0.5 border-t border-white/10">
-                  {room.currentSharedImage.caption && (
-                    <p className="text-xs text-white font-bold truncate">
-                      {room.currentSharedImage.caption}
-                    </p>
-                  )}
-                  <span className="text-[10px] text-amber-400/80">
-                    {isAr ? `مشاركة بواسطة: ${room.currentSharedImage.sharedBy}` : `Shared by: ${room.currentSharedImage.sharedBy}`}
-                  </span>
-                </div>
-
-                {/* Click to Zoom Icon */}
-                <button
-                  onClick={() => setLightboxImage(room.currentSharedImage!.url)}
-                  className="absolute top-2 right-2 p-1.5 rounded-lg bg-black/60 text-white/80 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer"
-                  title={isAr ? 'تكبير الصورة' : 'Zoom Image'}
-                >
-                  <Maximize2 size={14} />
-                </button>
-              </div>
-            ) : (
-              <div className="flex-1 border-2 border-dashed border-white/10 rounded-2xl flex flex-col items-center justify-center p-6 text-center text-white/40 gap-2">
-                <ImageIcon size={32} className="opacity-40" />
-                <p className="text-xs">
-                  {isAr 
-                    ? 'لم يتم مشاركة أي صورة بعد. يمكن للمحاورين مشاركة وثيقة أو صورة من المعرض لعرضها مباشرة هنا.' 
-                    : 'No image shared yet. Debaters can share an image or document from their gallery here.'}
-                </p>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Right/Debater B Battle Card */}
-        <div className={`lg:col-span-4 rounded-3xl p-4 sm:p-5 flex flex-col justify-between transition-all duration-500 relative overflow-hidden backdrop-blur-xl border ${
-          lastDebaterBAlert
-            ? lastDebaterBAlert.isNegative
-              ? 'bg-slate-900/95 border-rose-400 ring-4 ring-rose-500/50 shadow-[0_0_35px_rgba(244,63,94,0.35)]'
-              : 'bg-slate-900/95 border-emerald-400 ring-4 ring-emerald-500/50 shadow-[0_0_35px_rgba(16,185,129,0.35)]'
-            : isDebaterBActive && room.status === 'active'
-              ? 'bg-gradient-to-b from-emerald-950/70 to-slate-900/90 border-emerald-500/60 shadow-[0_0_30px_rgba(16,185,129,0.25)] ring-2 ring-emerald-500/40'
-              : 'bg-slate-900/70 border-white/10 opacity-80'
-        }`}>
-          {/* Active Speaker Ribbon */}
-          {isDebaterBActive && room.status === 'active' && (
-            <div className="absolute top-0 right-0 left-0 bg-emerald-500 text-slate-950 text-[10px] font-black text-center py-1 flex items-center justify-center gap-1.5 shadow-md">
-              <Mic size={12} className="animate-bounce" />
-              <span>{isAr ? 'المتحدث الحالي • المايك مفتوح' : 'Active Speaker • Mic Enabled'}</span>
-            </div>
-          )}
-
-          <div className="mt-4 flex flex-col items-center text-center">
-            {/* Avatar & Voice Waves Ring */}
-            <div className="relative mb-3">
-              {/* Floating Reaction Alert Badge on Avatar */}
-              <AnimatePresence>
-                {lastDebaterBAlert && (
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.5, y: 10 }}
-                    animate={{ opacity: 1, scale: 1, y: -16 }}
-                    exit={{ opacity: 0, scale: 0.8, y: -26 }}
-                    transition={{ duration: 0.3, type: 'spring' }}
-                    className={`absolute -top-4 left-1/2 -translate-x-1/2 z-30 px-2.5 py-1 rounded-full text-[11px] font-black flex items-center gap-1 shadow-2xl border whitespace-nowrap ${
-                      lastDebaterBAlert.isNegative
-                        ? 'bg-rose-600 text-white border-rose-300 ring-2 ring-rose-500/60 shadow-rose-950/90'
-                        : 'bg-emerald-600 text-white border-emerald-300 ring-2 ring-emerald-500/60 shadow-emerald-950/90'
-                    }`}
-                  >
-                    <span className="text-sm animate-bounce">{lastDebaterBAlert.emoji}</span>
-                    <span>{lastDebaterBAlert.label}</span>
-                    <span className="text-[10px] opacity-80 font-mono">+1</span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <div className={`w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden p-1 border-2 transition-all duration-300 ${
-                lastDebaterBAlert
-                  ? lastDebaterBAlert.isNegative
-                    ? 'border-rose-400 scale-110 shadow-[0_0_25px_rgba(244,63,94,0.6)]'
-                    : 'border-emerald-400 scale-110 shadow-[0_0_25px_rgba(52,211,153,0.6)]'
-                  : isDebaterBActive && room.status === 'active'
-                    ? 'border-emerald-400 scale-105 shadow-[0_0_20px_rgba(52,211,153,0.5)]'
-                    : 'border-white/20'
-              }`}>
-                <img 
-                  src={room.debaterB?.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80'} 
-                  alt="Debater B" 
-                  className="w-full h-full object-cover rounded-full"
-                />
-              </div>
-
-              {/* Status Badge Icon */}
-              <div className={`absolute bottom-0 right-0 w-8 h-8 rounded-full flex items-center justify-center text-xs font-black shadow-lg border-2 border-slate-900 ${
-                isDebaterBActive && room.status === 'active'
-                  ? 'bg-emerald-500 text-slate-950 animate-pulse'
-                  : 'bg-rose-600 text-white'
-              }`}>
-                {isDebaterBActive && room.status === 'active' ? <Mic size={14} /> : <MicOff size={14} />}
-              </div>
-            </div>
-
-            <span className="px-3 py-0.5 rounded-full text-[10px] font-bold bg-white/10 text-white/70 mb-1">
-              {isAr ? 'المناظر الثاني (الطرف ب)' : 'Debater B'}
-            </span>
-            <h2 className="text-base sm:text-lg font-black text-white">
-              {room.debaterB?.name || (isAr ? 'في انتظار انضمام المناظر...' : 'Waiting for Debater B...')}
-            </h2>
-            {room.debaterB?.uid === currentUserId && (
-              <span className="text-[10px] text-amber-400 font-bold mt-0.5">({isAr ? 'أنت' : 'You'})</span>
-            )}
-          </div>
-
-          {/* Real-time Audio Level Waves */}
-          {isDebaterBActive && room.status === 'active' ? (
-            <div className="my-4 bg-black/40 rounded-2xl p-3 border border-emerald-500/30 flex flex-col items-center gap-2">
-              <div className="flex items-center gap-1.5 h-6">
-                {[40, 70, 90, 60, 100, 80, 50, 85, 65, 95].map((height, i) => (
-                  <motion.div
-                    key={i}
-                    animate={{ height: `${(audioLevel * height) / 100}%` }}
-                    transition={{ duration: 0.15, repeat: Infinity, repeatType: "reverse" }}
-                    className="w-1.5 bg-emerald-400 rounded-full"
-                    style={{ minHeight: '4px', maxHeight: '24px' }}
-                  />
-                ))}
-              </div>
-              <span className="text-[10px] text-emerald-400 font-mono font-bold">
-                {isAr ? 'البث الصوتي المباشر نشط' : 'Live Audio Stream Transmitting'}
-              </span>
-            </div>
-          ) : (
-            <div className="my-4 bg-black/30 rounded-2xl p-3 border border-white/5 flex items-center justify-center gap-2 text-white/40 text-xs">
-              <MicOff size={14} />
-              <span>{isAr ? 'المايك مكتوم حتى يبدأ الدور' : 'Mic muted until turn begins'}</span>
-            </div>
-          )}
-
-          {/* Dedicated Live Audience Reactions & Encouragement / Dispute for Debater B */}
-          <div className="mt-3 bg-slate-950/70 rounded-2xl p-3 border border-white/10 flex flex-col gap-2.5 shadow-inner">
-            {/* Support & Dispute Metrics Bar */}
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-[10px] sm:text-[11px]">
-                <span className="font-black text-emerald-400 flex items-center gap-1">
-                  <span>💚 {isAr ? 'تأييد وتشجيع' : 'Support'}:</span>
-                  <span className="font-mono font-black">{totalDebaterBPositive}</span>
-                  <span className="text-[10px] text-emerald-400/80">({posPercentB}%)</span>
-                </span>
-                <span className="font-black text-rose-400 flex items-center gap-1">
-                  <span>💔 {isAr ? 'نقد واعتراض' : 'Dispute'}:</span>
-                  <span className="font-mono font-black">{totalDebaterBNegative}</span>
-                  <span className="text-[10px] text-rose-400/80">({negPercentB}%)</span>
-                </span>
-              </div>
-              
-              {/* Visual Support vs Dispute Ratio Track */}
-              <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden flex">
-                <div 
-                  className="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-500" 
-                  style={{ width: `${posPercentB}%` }} 
-                />
-                <div 
-                  className="h-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-500" 
-                  style={{ width: `${negPercentB}%` }} 
-                />
-              </div>
-            </div>
-
-            {/* Category Tab Selector */}
-            <div className="flex items-center justify-between bg-black/40 p-1 rounded-xl border border-white/5 text-[10px] font-black">
-              <button
-                type="button"
-                onClick={() => setDebaterBTab('all')}
-                className={`flex-1 py-1 rounded-lg transition-all text-center ${
-                  debaterBTab === 'all' 
-                    ? 'bg-white/15 text-white shadow-sm' 
-                    : 'text-white/50 hover:text-white'
-                }`}
-              >
-                {isAr ? '🌐 الكل' : 'All'}
-              </button>
-              <button
-                type="button"
-                onClick={() => setDebaterBTab('positive')}
-                className={`flex-1 py-1 rounded-lg transition-all text-center flex items-center justify-center gap-1 ${
-                  debaterBTab === 'positive' 
-                    ? 'bg-emerald-500/25 text-emerald-300 border border-emerald-500/30 shadow-sm' 
-                    : 'text-white/50 hover:text-emerald-400'
-                }`}
-              >
-                <span>👍</span>
-                <span>{isAr ? 'تشجيع' : 'Support'}</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => setDebaterBTab('negative')}
-                className={`flex-1 py-1 rounded-lg transition-all text-center flex items-center justify-center gap-1 ${
-                  debaterBTab === 'negative' 
-                    ? 'bg-rose-500/25 text-rose-300 border border-rose-500/30 shadow-sm' 
-                    : 'text-white/50 hover:text-rose-400'
-                }`}
-              >
-                <span>👎</span>
-                <span>{isAr ? 'نقد واعتراض' : 'Dispute'}</span>
-              </button>
-            </div>
-
-            {/* Interactive Reaction Buttons Matrix */}
-            <div className="grid grid-cols-3 gap-1.5 max-h-40 overflow-y-auto pr-0.5 scrollbar-thin scrollbar-thumb-white/10">
-              {(debaterBTab === 'all' || debaterBTab === 'positive') && POSITIVE_DEBATER_REACTIONS.map((item) => {
-                const count = debaterBReactions[item.emoji] || 0;
-                return (
-                  <button
-                    key={`debB_pos_${item.emoji}`}
-                    type="button"
-                    onClick={() => handleSendTargetedReaction('debaterB', item.emoji, isAr ? item.labelAr : item.labelEn, false)}
-                    className="group relative py-1.5 px-2 bg-emerald-950/40 hover:bg-emerald-600/30 active:scale-90 rounded-xl border border-emerald-500/20 hover:border-emerald-400/60 flex items-center justify-between transition-all cursor-pointer shadow-sm"
-                    title={`${isAr ? item.labelAr : item.labelEn} (${isAr ? 'تشجيع وتأييد للمناظر ب' : 'Support Debater B'})`}
-                  >
-                    <span className="text-sm group-hover:scale-125 transition-transform drop-shadow">{item.emoji}</span>
-                    <span className="text-[9px] font-bold text-emerald-300/90 truncate max-w-[42px]">{isAr ? item.shortAr : item.labelEn}</span>
-                    <span className="text-[10px] font-black font-mono text-emerald-400 bg-emerald-900/70 px-1 rounded-md min-w-[16px] text-center">
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-
-              {(debaterBTab === 'all' || debaterBTab === 'negative') && NEGATIVE_DEBATER_REACTIONS.map((item) => {
-                const count = debaterBReactions[item.emoji] || 0;
-                return (
-                  <button
-                    key={`debB_neg_${item.emoji}`}
-                    type="button"
-                    onClick={() => handleSendTargetedReaction('debaterB', item.emoji, isAr ? item.labelAr : item.labelEn, true)}
-                    className="group relative py-1.5 px-2 bg-rose-950/40 hover:bg-rose-600/30 active:scale-90 rounded-xl border border-rose-500/20 hover:border-rose-400/60 flex items-center justify-between transition-all cursor-pointer shadow-sm"
-                    title={`${isAr ? item.labelAr : item.labelEn} (${isAr ? 'اعتراض ونقد للمناظر ب' : 'Dispute Debater B'})`}
-                  >
-                    <span className="text-sm group-hover:scale-125 transition-transform drop-shadow">{item.emoji}</span>
-                    <span className="text-[9px] font-bold text-rose-300/90 truncate max-w-[42px]">{isAr ? item.shortAr : item.labelEn}</span>
-                    <span className="text-[10px] font-black font-mono text-rose-400 bg-rose-900/70 px-1 rounded-md min-w-[16px] text-center">
-                      {count}
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Quick Slot Action if Empty */}
-          {!room.debaterB && (
-            <button
-              onClick={() => handleTakeDebaterSlot('debaterB')}
-              className="w-full mt-2 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-slate-950 font-black rounded-xl text-xs transition-all cursor-pointer"
-            >
-              {isAr ? 'احجز مقعد المناظر ب' : 'Take Debater B Seat'}
-            </button>
-          )}
-        </div>
-      </div>
 
       {/* ==================================================== */}
       {/* Listeners & Audience Section (المستمعون والحضور)     */}
