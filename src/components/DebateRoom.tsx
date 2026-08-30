@@ -1325,7 +1325,7 @@ function DebateStage({
 {/* 1. الشريط العلوي المبسط Header */}
 <header className="flex items-center justify-between p-4 bg-slate-900/90 border-b border-slate-800">
   <div>
-    <h2 className="text-base font-bold text-white">{currentRoom?.title || (isAr ? 'غرفة المناظرة' : 'Debate Room')}</h2>
+    <h2 className="text-base font-bold text-white">{room?.title || (isAr ? 'غرفة المناظرة' : 'Live')}</h2>
     <span className="text-xs text-emerald-400 font-medium">● {isAr ? 'بث مباشر' : 'Live'}</span>
   </div>
   <button 
