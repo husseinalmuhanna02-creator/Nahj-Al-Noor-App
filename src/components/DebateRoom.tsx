@@ -1356,7 +1356,7 @@ function DebateStage({
     <div className="mt-1.5">
       {room?.currentTurn === 'debaterA' ? (
         <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-          ⏱️ {Math.floor((turnSecondsLeft || 0) / 60)}:{('0' + ((room?.turnSecondsLeft || 0) % 60)).slice(-2)}
+          ⏱️ {Math.floor((room?.turnSecondsLeft || 0) / 60)}:{('0' + ((room?.turnSecondsLeft || 0) % 60)).slice(-2)}
         </span>
       ) : (
         <span className="px-2 py-0.5 rounded-full text-xs text-slate-400 bg-slate-700/40">
@@ -1391,7 +1391,7 @@ function DebateStage({
         <div className="mt-1.5">
           {room?.currentTurn === 'debaterB' ? (
             <span className="px-2.5 py-1 rounded-full text-xs font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-              ⏱️ {Math.floor((room?.turnSecondsLeft || 0) / 60)}:{('0' + ((turnSecondsLeft || 0) % 60)).slice(-2)}
+              ⏱️ {Math.floor((room?.turnSecondsLeft || 0) / 60)}:{('0' + ((room?.turnSecondsLeft || 0) % 60)).slice(-2)}
             </span>
           ) : (
             <span className="px-2 py-0.5 rounded-full text-xs text-slate-400 bg-slate-700/40">
