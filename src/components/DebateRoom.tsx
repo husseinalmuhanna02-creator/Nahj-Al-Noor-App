@@ -1374,7 +1374,7 @@ function DebateStage({
 
   {/* المناظر الثاني (الطرف ب) */}
   <div className={`flex flex-col items-center p-4 rounded-2xl bg-slate-800/60 border ${room?.currentTurn === 'debaterB' ? 'border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/50' : 'border-slate-700/60'}`}>
-    {(room?.debaterB || debaterB) ? (
+    {room?.debaterB ? (
       <>
         <div className="relative">
           <img 
