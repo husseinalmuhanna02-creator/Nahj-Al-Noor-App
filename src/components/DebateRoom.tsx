@@ -1425,84 +1425,98 @@ function DebateStage({
 </div>
           
 {/* منصة الأسئلة والوثائق للمناظرين */}
-<div className="my-4 p-4 bg-slate-900/90 border border-amber-500/30 rounded-2xl space-y-3 shadow-xl">
-  <div className="flex items-center justify-between border-b border-white/10 pb-2">
-    <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-      <span>❓🖼️</span>
-      <span>{isAr ? 'سؤال ووثائق المناظرة' : 'Debater Question & Visuals'}</span>
-    </span>
-    {(sharedQuestionText || sharedImageUrl) && (
-      <button
-        onClick={handleClearSharing}
-        className="text-[11px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 px-2 py-1 rounded-lg"
-      >
-        {isAr ? 'حذف العرض' : 'Clear'}
-      </button>
-    )}
-  </div>
+{(() => {
+  const qText = typeof sharedQuestionText !== 'undefined' ? sharedQuestionText : '';
+  const imgUrl = typeof sharedImageUrl !== 'undefined' ? sharedImageUrl : '';
+  const author = typeof sharedAuthorName !== 'undefined' ? sharedAuthorName : '';
+  const dQuestion = typeof debaterQuestion !== 'undefined' ? debaterQuestion : '';
+  const isArabic = typeof isAr !== 'undefined' ? isAr : true;
 
-  {/* عرض السؤال والصورة المشاركة */}
-  {(sharedQuestionText || sharedImageUrl) ? (
-    <div className="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 space-y-2">
-      {sharedAuthorName && (
-        <div className="text-[11px] font-bold text-sky-400 flex items-center gap-1">
-          <span>👤</span>
-          <span>{isAr ? `بواسطة المناظر: ${sharedAuthorName}` : `Shared by: ${sharedAuthorName}`}</span>
+  return (
+    <div className="my-4 p-4 bg-slate-900/90 border border-amber-500/30 rounded-2xl space-y-3 shadow-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-2">
+        <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+          <span>❓🖼️</span>
+          <span>{isArabic ? 'سؤال ووثائق المناظرة' : 'Debater Question & Visuals'}</span>
+        </span>
+        {(qText || imgUrl) && typeof handleClearSharing !== 'undefined' && (
+          <button
+            onClick={handleClearSharing}
+            className="text-[11px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 px-2 py-1 rounded-lg"
+          >
+            {isArabic ? 'حذف العرض' : 'Clear'}
+          </button>
+        )}
+      </div>
+
+      {/* عرض السؤال والصورة المشاركة */}
+      {(qText || imgUrl) ? (
+        <div className="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 space-y-2">
+          {author && (
+            <div className="text-[11px] font-bold text-sky-400 flex items-center gap-1">
+              <span>👤</span>
+              <span>{isArabic ? `بواسطة المناظر: ${author}` : `Shared by: ${author}`}</span>
+            </div>
+          )}
+
+          {qText && (
+            <p className="text-xs sm:text-sm font-semibold text-white bg-black/40 p-2.5 rounded-xl border border-white/5">
+              💬 {qText}
+            </p>
+          )}
+
+          {imgUrl && (
+            <div className="flex justify-center bg-black/50 rounded-xl p-1 border border-white/10 max-h-64 overflow-hidden">
+              <img src={imgUrl} alt="وثيقة المناظرة" className="max-h-60 object-contain rounded-lg" />
+            </div>
+          )}
         </div>
-      )}
-
-      {sharedQuestionText && (
-        <p className="text-xs sm:text-sm font-semibold text-white bg-black/40 p-2.5 rounded-xl border border-white/5">
-          💬 {sharedQuestionText}
+      ) : (
+        <p className="text-[11px] text-white/40 text-center py-1">
+          {isArabic ? 'لم يتم إرفاق سؤال أو صورة حتى الآن' : 'No question or image shared yet'}
         </p>
       )}
 
-      {sharedImageUrl && (
-        <div className="flex justify-center bg-black/50 rounded-xl p-1 border border-white/10 max-h-64 overflow-hidden">
-          <img src={sharedImageUrl} alt="وثيقة المناظرة" className="max-h-60 object-contain rounded-lg" />
+      {/* أدوات التحكم بالإدخال */}
+      <div className="pt-2 border-t border-white/5 space-y-2">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            defaultValue={dQuestion}
+            onChange={(e) => {
+              if (typeof setDebaterQuestion !== 'undefined') setDebaterQuestion(e.target.value);
+            }}
+            placeholder={isArabic ? 'اكتب سؤالك كـمناظر هنا...' : 'Type your question...'}
+            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+          />
+          <button
+            onClick={() => {
+              if (typeof handlePublishQuestion !== 'undefined') handlePublishQuestion();
+            }}
+            className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all"
+          >
+            {isArabic ? 'نشر السؤال' : 'Post'}
+          </button>
         </div>
-      )}
+
+        <div className="flex justify-end">
+          <label className="cursor-pointer px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-xl text-xs text-sky-300 font-bold flex items-center gap-1.5 transition-all">
+            <span>🖼️</span>
+            <span>{isArabic ? 'رفع صورة من المعرض' : 'Upload Image'}</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                if (typeof handleImageSelected !== 'undefined') handleImageSelected(e);
+              }}
+              className="hidden"
+            />
+          </label>
+        </div>
+      </div>
     </div>
-  ) : (
-    <p className="text-[11px] text-white/40 text-center py-1">
-      {isAr ? 'لم يتم إرفاق سؤال أو صورة حتى الآن' : 'No question or image shared yet'}
-    </p>
-  )}
-
-  {/* أدوات التحكم بالإدخال */}
-  <div className="pt-2 border-t border-white/5 space-y-2">
-    <div className="flex gap-2">
-      <input
-        type="text"
-        value={debaterQuestion}
-        onChange={(e) => setDebaterQuestion(e.target.value)}
-        placeholder={isAr ? 'اكتب سؤالك كـمناظر هنا...' : 'Type your question...'}
-        className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-      />
-      <button
-        onClick={handlePublishQuestion}
-        className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all"
-      >
-        {isAr ? 'نشر السؤال' : 'Post'}
-      </button>
-    </div>
-
-    <div className="flex justify-end">
-      <label className="cursor-pointer px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-xl text-xs text-sky-300 font-bold flex items-center gap-1.5 transition-all">
-        <span>🖼️</span>
-        <span>{isAr ? 'رفع صورة من المعرض' : 'Upload Image'}</span>
-        <input
-          type="file"
-          accept="image/*"
-          onChange={handleImageSelected}
-          className="hidden"
-        />
-      </label>
-    </div>
-  </div>
-</div>
-
-
+  );
+})()}
     
       {/* ==================================================== */}
       {/* Listeners & Audience Section (المستمعون والحضور)     */}
