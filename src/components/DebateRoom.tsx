@@ -1894,9 +1894,6 @@ const [sharedQuestionText, setSharedQuestionText] = useState('');
 const [sharedImageUrl, setSharedImageUrl] = useState('');
 const [sharedAuthorName, setSharedAuthorName] = useState('');
 
-// التصحيح في السطر 1896
-const isDebater = userRole === 'debaterA' || userRole === 'debaterB';
-
 // التصحيح في السطر 1901 (تبسيط العنوان)
 const handlePublishQuestion = () => {
   if (!debaterQuestion.trim()) return;
