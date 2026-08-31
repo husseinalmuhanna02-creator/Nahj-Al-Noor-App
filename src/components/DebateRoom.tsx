@@ -1859,20 +1859,21 @@ function DebateStage({
 // ==========================================
 // Outer Root Debate Manager (Lobby + StreamVideo Client)
 // ==========================================
-  function DebateRoomContent() {
+function DebateRoomContent() {
   const { settings } = useApp();
   const isAr = settings.language === 'ar';
 
   const [activeRooms, setActiveRooms] = useState<DebateRoomData[]>([]);
   const [currentRoom, setCurrentRoom] = useState<DebateRoomData | null>(null);
   const [userRole, setUserRole] = useState<DebateRole>('listener');
+  const isDebater = userRole === 'debaterA' || userRole === 'debaterB';
+
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [joiningRoom, setJoiningRoom] = useState(false);
   const [mainViewTab, setMainViewTab] = useState<'rooms' | 'leaderboard'>('rooms');
   const [turnSecondsLeft, setTurnSecondsLeft] = useState(180);
   const [showReactionsMenu, setShowReactionsMenu] = useState(false);
-
-const getAppleEmojiUrl = (emoji: string) => 
+  const getAppleEmojiUrl = (emoji: string) => 
   `https://emojicdn.elk.sh/${encodeURIComponent(emoji)}?style=apple`;
 
 const REACTION_OPTIONS = [
