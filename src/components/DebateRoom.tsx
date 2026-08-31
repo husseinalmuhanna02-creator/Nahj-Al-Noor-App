@@ -1378,7 +1378,7 @@ function DebateStage({
       <>
         <div className="relative">
           <img 
-            src={(room?.debaterB || debaterB)?.avatar || PRESET_AVATARS[0].url} 
+            src={room?.debaterB?.avatar || PRESET_AVATARS[0].url}
             className={`w-20 h-20 rounded-full object-cover border-2 ${room?.currentTurn === 'debaterB' ? 'border-emerald-400' : 'border-slate-600'}`} 
           />
           <span className={`absolute bottom-0 right-0 p-1.5 rounded-full border-2 border-slate-900 ${room?.currentTurn === 'debaterB' ? 'bg-emerald-500 text-slate-950 animate-pulse' : 'bg-red-500 text-white'}`}>
@@ -1386,7 +1386,7 @@ function DebateStage({
           </span>
         </div>
 
-        <h3 className="mt-2 text-sm font-bold text-white truncate max-w-full">{(room?.debaterB || debaterB)?.name || (isAr ? 'الطرف ب' : 'Debater B')}</h3>
+        <h3 className="mt-2 text-sm font-bold text-white truncate max-w-full">{room?.debaterB?.name || (isAr ? 'الطرف ب' : 'Debater B')}</h3>
 
         <div className="mt-1.5">
           {room?.currentTurn === 'debaterB' ? (
