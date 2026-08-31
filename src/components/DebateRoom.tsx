@@ -1343,7 +1343,7 @@ function DebateStage({
   <div className={`flex flex-col items-center p-4 rounded-2xl bg-slate-800/60 border ${room?.currentTurn === 'debaterA' ? 'border-emerald-500 shadow-lg shadow-emerald-500/10 ring-1 ring-emerald-500/50' : 'border-slate-700/60'}`}>
     <div className="relative">
       <img 
-        src={debaterA?.avatar || PRESET_AVATARS[0].url} 
+        src={room?.debaterA?.avatar || PRESET_AVATARS[0].url} 
         className={`w-20 h-20 rounded-full object-cover border-2 ${room?.currentTurn === 'debaterA' ? 'border-emerald-400' : 'border-slate-600'}`} 
       />
       <span className={`absolute bottom-0 right-0 p-1.5 rounded-full border-2 border-slate-900 ${room?.currentTurn === 'debaterA' ? 'bg-emerald-500 text-slate-950 animate-pulse' : 'bg-red-500 text-white'}`}>
@@ -1351,7 +1351,7 @@ function DebateStage({
       </span>
     </div>
 
-    <h3 className="mt-2 text-sm font-bold text-white truncate max-w-full">{debaterA?.name || (isAr ? 'الطرف أ' : 'Debater A')}</h3>
+    <h3 className="mt-2 text-sm font-bold text-white truncate max-w-full">{room?.debaterA?.name || (isAr ? 'الطرف أ' : 'Debater A')}</h3>
     
     <div className="mt-1.5">
       {room?.currentTurn === 'debaterA' ? (
