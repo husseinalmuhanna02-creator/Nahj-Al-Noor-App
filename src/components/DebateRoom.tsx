@@ -1507,17 +1507,53 @@ function DebateStage({
           <span className="font-bold">{isAr ? 'تفاعل الجمهور المباشر:' : 'Live Reactions:'}</span>
         </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {['👍', '👏', '💡', '📜', '⚖️', '🌟'].map((emoji) => (
-            <button
-              key={emoji}
-              onClick={() => handleSendReaction(emoji)}
-              className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white/10 hover:bg-white/20 active:scale-125 transition-transform flex items-center justify-center text-lg sm:text-xl cursor-pointer"
-            >
-              {emoji}
-            </button>
-          ))}
-        </div>
+        <div className="relative">
+  {!showReactionsMenu ? (
+    <button
+      onClick={() => setShowReactionsMenu(true)}
+      className="py-2 px-3.5 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 rounded-xl text-amber-300 font-bold text-xs transition-all flex items-center gap-2"
+    >
+      <img src={getAppleEmojiUrl('👏')} alt="تفاعل" className="w-5 h-5 object-contain" />
+      <span>{isAr ? 'تفاعل الجمهور المباشر' : 'Live Reactions'}</span>
+    </button>
+  ) : (
+    <div className="absolute bottom-12 right-0 w-80 bg-slate-900/95 border border-white/20 rounded-2xl p-3 shadow-2xl space-y-3 z-50 backdrop-blur-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-2">
+        <span className="text-xs font-bold text-amber-400">
+          {isAr ? 'اختر تفاعلك:' : 'Choose Reaction:'}
+        </span>
+        <button
+          onClick={() => setShowReactionsMenu(false)}
+          className="px-2 py-1 bg-red-500/20 text-red-300 hover:bg-red-500/40 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1"
+        >
+          <span>✖</span>
+          <span>{isAr ? 'إخفاء' : 'Hide'}</span>
+        </button>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 max-h-60 overflow-y-auto pr-1">
+        {REACTION_OPTIONS.map((item) => (
+          <button
+            key={item.label}
+            onClick={() => {
+              handleSendReaction(item.emoji);
+              setShowReactionsMenu(false);
+            }}
+            className="flex items-center gap-2.5 p-2 bg-white/5 hover:bg-white/15 border border-white/10 rounded-xl text-right transition-all group active:scale-95"
+          >
+            <img 
+              src={getAppleEmojiUrl(item.emoji)} 
+              alt={item.label} 
+              className="w-6 h-6 object-contain group-hover:scale-125 transition-transform" 
+            />
+            <span className="text-[11px] text-white/90 font-medium truncate">{item.label}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+</div>
+
 
         {/* Quick Leave in Bottom Bar */}
         <button
