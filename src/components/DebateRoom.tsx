@@ -1893,21 +1893,24 @@ const [sharedQuestionText, setSharedQuestionText] = useState('');
 const [sharedImageUrl, setSharedImageUrl] = useState('');
 const [sharedAuthorName, setSharedAuthorName] = useState('');
 
-const isDebater = currentUserRole === 'debaterA' || currentUserRole === 'debaterB';
+// التصحيح في السطر 1896
+const isDebater = userRole === 'debaterA' || userRole === 'debaterB';
 
+// التصحيح في السطر 1901 (تبسيط العنوان)
 const handlePublishQuestion = () => {
   if (!debaterQuestion.trim()) return;
   setSharedQuestionText(debaterQuestion);
-  setSharedAuthorName(userName || (isAr ? 'مناظر' : 'Debater'));
+  setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
   setDebaterQuestion('');
 };
 
+// التصحيح في السطر 1910 (تبسيط العنوان)
 const handleImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
   if (file) {
     const url = URL.createObjectURL(file);
     setSharedImageUrl(url);
-    setSharedAuthorName(userName || (isAr ? 'مناظر' : 'Debater'));
+    setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
   }
 };
 
