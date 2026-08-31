@@ -1425,82 +1425,94 @@ function DebateStage({
 </div>
           
 {/* منصة الأسئلة والوثائق للمناظرين */}
-<div className="my-4 p-4 bg-slate-900/90 border border-amber-500/30 rounded-2xl space-y-3 shadow-xl">
-  <div className="flex items-center justify-between border-b border-white/10 pb-2">
-    <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
-      <span>❓🖼️</span>
-      <span>{isAr ? 'سؤال ووثائق المناظرة' : 'Debater Question & Visuals'}</span>
-    </span>
-    {(userRole === 'debaterA' || userRole === 'debaterB') && (sharedQuestionText || sharedImageUrl) && (
-      <button
-        onClick={handleClearSharing}
-        className="text-[11px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 px-2 py-1 rounded-lg"
-      >
-        {isAr ? 'حذف العرض' : 'Clear'}
-      </button>
-    )}
-  </div>
+{(() => {
+  const [qText, setQText] = React.useState('');
+  const [sharedText, setSharedText] = React.useState('');
+  const [sharedImg, setSharedImg] = React.useState('');
 
-  {/* عرض السؤال والصورة المشاركة */}
-  {(sharedQuestionText || sharedImageUrl) ? (
-    <div className="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 space-y-2">
-      <div className="text-[11px] font-bold text-sky-400 flex items-center gap-1">
-        <span>👤</span>
-        <span>{isAr ? `بواسطة المناظر: ${sharedAuthorName}` : `Shared by: ${sharedAuthorName}`}</span>
+  return (
+    <div className="my-4 p-4 bg-slate-900/90 border border-amber-500/30 rounded-2xl space-y-3 shadow-xl">
+      <div className="flex items-center justify-between border-b border-white/10 pb-2">
+        <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+          <span>❓🖼️</span>
+          <span>{isAr ? 'سؤال ووثائق المناظرة' : 'Debater Question & Visuals'}</span>
+        </span>
+        {(sharedText || sharedImg) && (
+          <button
+            onClick={() => { setSharedText(''); setSharedImg(''); }}
+            className="text-[11px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 px-2 py-1 rounded-lg"
+          >
+            {isAr ? 'حذف العرض' : 'Clear'}
+          </button>
+        )}
       </div>
 
-      {sharedQuestionText && (
-        <p className="text-xs sm:text-sm font-semibold text-white bg-black/40 p-2.5 rounded-xl border border-white/5">
-          💬 {sharedQuestionText}
+      {/* عرض السؤال والصورة المشاركة */}
+      {(sharedText || sharedImg) ? (
+        <div className="bg-slate-800/80 border border-slate-700/80 rounded-xl p-3 space-y-2">
+          {sharedText && (
+            <p className="text-xs sm:text-sm font-semibold text-white bg-black/40 p-2.5 rounded-xl border border-white/5">
+              💬 {sharedText}
+            </p>
+          )}
+
+          {sharedImg && (
+            <div className="flex justify-center bg-black/50 rounded-xl p-1 border border-white/10 max-h-64 overflow-hidden">
+              <img src={sharedImg} alt="وثيقة المناظرة" className="max-h-60 object-contain rounded-lg" />
+            </div>
+          )}
+        </div>
+      ) : (
+        <p className="text-[11px] text-white/40 text-center py-1">
+          {isAr ? 'لم يتم إرفاق سؤال أو صورة حتى الآن' : 'No question or image shared yet'}
         </p>
       )}
 
-      {sharedImageUrl && (
-        <div className="flex justify-center bg-black/50 rounded-xl p-1 border border-white/10 max-h-64 overflow-hidden">
-          <img src={sharedImageUrl} alt="وثيقة المناظرة" className="max-h-60 object-contain rounded-lg" />
-        </div>
-      )}
-    </div>
-  ) : (
-    <p className="text-[11px] text-white/40 text-center py-1">
-      {isAr ? 'لم يتم إرفاق سؤال أو صورة حتى الآن' : 'No question or image shared yet'}
-    </p>
-  )}
-
-  {/* أدوات التحكم للمناظرين فقط */}
-  {(userRole === 'debaterA' || userRole === 'debaterB') && (
-    <div className="pt-2 border-t border-white/5 space-y-2">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={debaterQuestion}
-          onChange={(e) => setDebaterQuestion(e.target.value)}
-          placeholder={isAr ? 'اكتب سؤالك كـمناظر هنا...' : 'Type your question...'}
-          className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-        />
-        <button
-          onClick={handlePublishQuestion}
-          className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all"
-        >
-          {isAr ? 'نشر السؤال' : 'Post'}
-        </button>
-      </div>
-
-      <div className="flex justify-end">
-        <label className="cursor-pointer px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-xl text-xs text-sky-300 font-bold flex items-center gap-1.5 transition-all">
-          <span>🖼️</span>
-          <span>{isAr ? 'رفع صورة من المعرض' : 'Upload Image'}</span>
+      {/* أدوات التحكم والإدخال */}
+      <div className="pt-2 border-t border-white/5 space-y-2">
+        <div className="flex gap-2">
           <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageSelected}
-            className="hidden"
+            type="text"
+            value={qText}
+            onChange={(e) => setQText(e.target.value)}
+            placeholder={isAr ? 'اكتب سؤالك كـمناظر هنا...' : 'Type your question...'}
+            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
           />
-        </label>
+          <button
+            onClick={() => {
+              if (qText.trim()) {
+                setSharedText(qText);
+                setQText('');
+              }
+            }}
+            className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all"
+          >
+            {isAr ? 'نشر السؤال' : 'Post'}
+          </button>
+        </div>
+
+        <div className="flex justify-end">
+          <label className="cursor-pointer px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-xl text-xs text-sky-300 font-bold flex items-center gap-1.5 transition-all">
+            <span>🖼️</span>
+            <span>{isAr ? 'رفع صورة من المعرض' : 'Upload Image'}</span>
+            <input
+              type="file"
+              accept="image/*"
+              onChange={(e) => {
+                const file = e.target.files?.[0];
+                if (file) {
+                  setSharedImg(URL.createObjectURL(file));
+                }
+              }}
+              className="hidden"
+            />
+          </label>
+        </div>
       </div>
     </div>
-  )}
-</div>
+  );
+})()}
+
     
       {/* ==================================================== */}
       {/* Listeners & Audience Section (المستمعون والحضور)     */}
