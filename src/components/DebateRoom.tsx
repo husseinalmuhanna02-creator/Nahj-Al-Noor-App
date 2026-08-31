@@ -1757,7 +1757,25 @@ function DebateStage({
   const [joiningRoom, setJoiningRoom] = useState(false);
   const [mainViewTab, setMainViewTab] = useState<'rooms' | 'leaderboard'>('rooms');
   const [turnSecondsLeft, setTurnSecondsLeft] = useState(180);
+  const [showReactionsMenu, setShowReactionsMenu] = useState(false);
 
+const getAppleEmojiUrl = (emoji: string) => 
+  `https://emojicdn.elk.sh/${encodeURIComponent(emoji)}?style=apple`;
+
+const REACTION_OPTIONS = [
+  { emoji: '👍', label: 'جيد جداً' },
+  { emoji: '👏', label: 'أحسنت' },
+  { emoji: '🔥', label: 'حجة قوية' },
+  { emoji: '💡', label: 'إضاءة ممتازة' },
+  { emoji: '⚖️', label: 'عدل ومنطق' },
+  { emoji: '📜', label: 'دليل قاطع' },
+  { emoji: '👎', label: 'غير مقبول' },
+  { emoji: '🫸', label: 'توقف عن الكذب' },
+  { emoji: '🫵', label: 'أنت مدلس' },
+  { emoji: '✋', label: 'صفعة قوية' },
+  { emoji: '🤡', label: 'مهرج' },
+];
+    
 useEffect(() => {
   if (currentRoom?.currentTurn) {
     setTurnSecondsLeft(180);
