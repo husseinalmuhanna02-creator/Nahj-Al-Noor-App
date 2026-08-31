@@ -1431,7 +1431,7 @@ function DebateStage({
       <span>❓🖼️</span>
       <span>{isAr ? 'سؤال ووثائق المناظرة' : 'Debater Question & Visuals'}</span>
     </span>
-    {isDebater && (sharedQuestionText || sharedImageUrl) && (
+    {(userRole === 'debaterA' || userRole === 'debaterB') && (sharedQuestionText || sharedImageUrl) && (
       <button
         onClick={handleClearSharing}
         className="text-[11px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 px-2 py-1 rounded-lg"
@@ -1468,7 +1468,7 @@ function DebateStage({
   )}
 
   {/* أدوات التحكم للمناظرين فقط */}
-  {isDebater && (
+  {(userRole === 'debaterA' || userRole === 'debaterB') && (
     <div className="pt-2 border-t border-white/5 space-y-2">
       <div className="flex gap-2">
         <input
