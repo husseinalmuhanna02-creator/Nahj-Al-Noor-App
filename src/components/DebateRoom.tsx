@@ -1811,6 +1811,34 @@ const REACTION_OPTIONS = [
   { emoji: '✋', label: 'صفعة قوية' },
   { emoji: '🤡', label: 'مهرج' },
 ];
+const [debaterQuestion, setDebaterQuestion] = useState('');
+const [sharedQuestionText, setSharedQuestionText] = useState('');
+const [sharedImageUrl, setSharedImageUrl] = useState('');
+const [sharedAuthorName, setSharedAuthorName] = useState('');
+
+const isDebater = currentUserRole === 'debaterA' || currentUserRole === 'debaterB';
+
+const handlePublishQuestion = () => {
+  if (!debaterQuestion.trim()) return;
+  setSharedQuestionText(debaterQuestion);
+  setSharedAuthorName(userName || (isAr ? 'مناظر' : 'Debater'));
+  setDebaterQuestion('');
+};
+
+const handleImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (file) {
+    const url = URL.createObjectURL(file);
+    setSharedImageUrl(url);
+    setSharedAuthorName(userName || (isAr ? 'مناظر' : 'Debater'));
+  }
+};
+
+const handleClearSharing = () => {
+  setSharedQuestionText('');
+  setSharedImageUrl('');
+  setSharedAuthorName('');
+};
     
 useEffect(() => {
   if (currentRoom?.currentTurn) {
