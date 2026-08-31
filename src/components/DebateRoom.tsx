@@ -1479,8 +1479,8 @@ function DebateStage({
                 </div>
 
                 {/* Name & Role Tag */}
-                <div className="flex flex-col min-w-0 max-w-[110px]">
-                  <span className="text-xs font-bold text-white truncate group-hover:text-sky-300 transition-colors">
+                <div className="flex flex-col min-w-0 max-w-[220px]">
+                  <span className="text-xs font-bold text-white whitespace-normal break-words group-hover:text-sky-300 transition-color">
                     {listener.name || (isAr ? 'مستمع' : 'Listener')}
                   </span>
                   <span className="text-[9px] text-white/40 font-mono">
