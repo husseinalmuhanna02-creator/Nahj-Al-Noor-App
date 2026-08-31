@@ -1431,7 +1431,7 @@ function DebateStage({
       <span>❓🖼️</span>
       <span>{isAr ? 'سؤال ووثائق المناظرة' : 'Debater Question & Visuals'}</span>
     </span>
-    {isDebater && (sharedQuestionText || sharedImageUrl) && (
+    {(sharedQuestionText || sharedImageUrl) && (
       <button
         onClick={handleClearSharing}
         className="text-[11px] font-bold text-red-400 hover:text-red-300 bg-red-500/10 px-2 py-1 rounded-lg"
@@ -1469,40 +1469,39 @@ function DebateStage({
     </p>
   )}
 
-  {/* أدوات التحكم للمناظرين فقط */}
-  {isDebater && (
-    <div className="pt-2 border-t border-white/5 space-y-2">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={debaterQuestion}
-          onChange={(e) => setDebaterQuestion(e.target.value)}
-          placeholder={isAr ? 'اكتب سؤالك كـمناظر هنا...' : 'Type your question...'}
-          className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
-        />
-        <button
-          onClick={handlePublishQuestion}
-          className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all"
-        >
-          {isAr ? 'نشر السؤال' : 'Post'}
-        </button>
-      </div>
-
-      <div className="flex justify-end">
-        <label className="cursor-pointer px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-xl text-xs text-sky-300 font-bold flex items-center gap-1.5 transition-all">
-          <span>🖼️</span>
-          <span>{isAr ? 'رفع صورة من المعرض' : 'Upload Image'}</span>
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageSelected}
-            className="hidden"
-          />
-        </label>
-      </div>
+  {/* أدوات التحكم بالإدخال */}
+  <div className="pt-2 border-t border-white/5 space-y-2">
+    <div className="flex gap-2">
+      <input
+        type="text"
+        value={debaterQuestion}
+        onChange={(e) => setDebaterQuestion(e.target.value)}
+        placeholder={isAr ? 'اكتب سؤالك كـمناظر هنا...' : 'Type your question...'}
+        className="flex-1 bg-black/40 border border-white/10 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-amber-400"
+      />
+      <button
+        onClick={handlePublishQuestion}
+        className="px-3 py-2 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-xs rounded-xl transition-all"
+      >
+        {isAr ? 'نشر السؤال' : 'Post'}
+      </button>
     </div>
-  )}
+
+    <div className="flex justify-end">
+      <label className="cursor-pointer px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-white/10 rounded-xl text-xs text-sky-300 font-bold flex items-center gap-1.5 transition-all">
+        <span>🖼️</span>
+        <span>{isAr ? 'رفع صورة من المعرض' : 'Upload Image'}</span>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageSelected}
+          className="hidden"
+        />
+      </label>
+    </div>
+  </div>
 </div>
+
 
     
       {/* ==================================================== */}
