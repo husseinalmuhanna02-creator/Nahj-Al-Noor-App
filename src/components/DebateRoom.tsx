@@ -1756,7 +1756,19 @@ function DebateStage({
   const [loadingRooms, setLoadingRooms] = useState(true);
   const [joiningRoom, setJoiningRoom] = useState(false);
   const [mainViewTab, setMainViewTab] = useState<'rooms' | 'leaderboard'>('rooms');
+  const [turnSecondsLeft, setTurnSecondsLeft] = useState(180);
 
+useEffect(() => {
+  if (currentRoom?.currentTurn) {
+    setTurnSecondsLeft(180);
+    const timer = setInterval(() => {
+      setTurnSecondsLeft((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }
+}, [currentRoom?.currentTurn]);
+    
   // Filtering & Classification States
   const [selectedCategory, setSelectedCategory] = useState<DebateCategory>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
