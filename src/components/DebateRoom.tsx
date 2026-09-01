@@ -1375,11 +1375,39 @@ function DebateStage({
       )}
     </div>
 
-    <button 
-      onClick={() => handleSendReaction && handleSendReaction('debaterA')}
-      className="mt-3 w-full py-2 bg-slate-700/50 hover:bg-emerald-600/20 text-emerald-400 text-xs font-bold rounded-xl border border-slate-600/50 flex items-center justify-center gap-1.5 transition-all">
-      👏 {isAr ? 'تأييد وتفاعل' : 'React'}
-    </button>
+<div className="relative w-full mt-3">
+  <button
+    type="button"
+    onClick={() => setShowReactionsMenu(!showReactionsMenu)}
+    className="w-full py-2 bg-slate-700/50 hover:bg-emerald-600/20 text-emerald-400 font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all cursor-pointer"
+  >
+    <span>👏</span>
+    <span>{isAr ? 'تأييد وتفاعل' : 'React'}</span>
+  </button>
+
+  {showReactionsMenu && (
+    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-500/30 p-2 rounded-2xl shadow-2xl grid grid-cols-5 gap-1.5 z-50 w-64 backdrop-blur-md">
+      {REACTION_OPTIONS.map((item, idx) => (
+        <button
+          key={idx}
+          type="button"
+          onClick={() => {
+            if (typeof sendDebateLiveReaction === 'function') {
+              sendDebateLiveReaction(item.emoji);
+            }
+            setShowReactionsMenu(false);
+          }}
+          className="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center justify-center transition-all hover:scale-110 cursor-pointer"
+          title={item.label}
+        >
+          <span className="text-xl">{item.emoji}</span>
+          <span className="text-[9px] text-white/60 truncate w-full text-center mt-0.5">{item.label}</span>
+        </button>
+      ))}
+    </div>
+  )}
+</div>
+
   </div>
 
   {/* المناظر الثاني (الطرف ب) */}
@@ -1410,11 +1438,39 @@ function DebateStage({
           )}
         </div>
 
-        <button 
-          onClick={() => handleSendReaction && handleSendReaction('debaterB')}
-          className="mt-3 w-full py-2 bg-slate-700/50 hover:bg-emerald-600/20 text-emerald-400 text-xs font-bold rounded-xl border border-slate-600/50 flex items-center justify-center gap-1.5 transition-all">
-          👏 {isAr ? 'تأييد وتفاعل' : 'React'}
+<div className="relative w-full mt-3">
+  <button
+    type="button"
+    onClick={() => setShowReactionsMenu(!showReactionsMenu)}
+    className="w-full py-2 bg-slate-700/50 hover:bg-emerald-600/20 text-emerald-400 font-bold rounded-xl text-xs flex items-center justify-center gap-1 transition-all cursor-pointer"
+  >
+    <span>👏</span>
+    <span>{isAr ? 'تأييد وتفاعل' : 'React'}</span>
+  </button>
+
+  {showReactionsMenu && (
+    <div className="absolute bottom-full mb-2 left-1/2 -translate-x-1/2 bg-slate-900 border border-amber-500/30 p-2 rounded-2xl shadow-2xl grid grid-cols-5 gap-1.5 z-50 w-64 backdrop-blur-md">
+      {REACTION_OPTIONS.map((item, idx) => (
+        <button
+          key={idx}
+          type="button"
+          onClick={() => {
+            if (typeof sendDebateLiveReaction === 'function') {
+              sendDebateLiveReaction(item.emoji);
+            }
+            setShowReactionsMenu(false);
+          }}
+          className="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center justify-center transition-all hover:scale-110 cursor-pointer"
+          title={item.label}
+        >
+          <span className="text-xl">{item.emoji}</span>
+          <span className="text-[9px] text-white/60 truncate w-full text-center mt-0.5">{item.label}</span>
         </button>
+      ))}
+    </div>
+  )}
+</div>
+
       </>
     ) : (
       /* المقعد فارغ */
