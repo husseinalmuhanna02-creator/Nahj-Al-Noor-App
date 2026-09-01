@@ -996,6 +996,12 @@ function DebateStage({
     saveLocalRoom(updatedRoom);
     joinDebateRoom(room.id, { uid: currentUserId, name: currentUserName }, slotRole).catch(() => {});
   };
+  const [showReactionsMenu, setShowReactionsMenu] = useState(false);
+  const [debaterQuestion, setDebaterQuestion] = useState('');
+  const [sharedQuestionText, setSharedQuestionText] = useState('');
+  const [sharedImageUrl, setSharedImageUrl] = useState('');
+  const [sharedAuthorName, setSharedAuthorName] = useState('');
+  
 
   // Debaters display names for Recharts labels
   const debaterAName = room.debaterA?.name || (isAr ? 'المحاور (أ)' : 'Debater A');
