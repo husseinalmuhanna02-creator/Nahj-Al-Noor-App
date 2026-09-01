@@ -996,6 +996,19 @@ function DebateStage({
     saveLocalRoom(updatedRoom);
     joinDebateRoom(room.id, { uid: currentUserId, name: currentUserName }, slotRole).catch(() => {});
   };
+  const REACTION_OPTIONS = [
+  { emoji: '👍', label: 'جيد جداً' },
+  { emoji: '👏', label: 'أحسنت' },
+  { emoji: '🔥', label: 'حجة قوية' },
+  { emoji: '💡', label: 'إضاءة ممتازة' },
+  { emoji: '⚖️', label: 'عدل ومنطق' },
+  { emoji: '📜', label: 'دليل قاطع' },
+  { emoji: '👎', label: 'غير مقبول' },
+  { emoji: '🤦', label: 'أنت مدلس' },
+  { emoji: '👏', label: 'صفعة قوية' },
+  { emoji: '🤡', label: 'مهرج' }
+];
+  
   const [showReactionsMenu, setShowReactionsMenu] = useState(false);
   const [debaterQuestion, setDebaterQuestion] = useState('');
   const [sharedQuestionText, setSharedQuestionText] = useState('');
