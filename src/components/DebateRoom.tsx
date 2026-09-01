@@ -1249,38 +1249,41 @@ function DebateStage({
 
   return (
     <div className="relative w-full max-w-6xl mx-auto flex flex-col gap-4 text-white p-2 sm:p-4 select-none pb-24">
-            {/* Floating Audience Reactions Container - تم تعطيله لمنع الظهور في أعلى الشاشة */}
-      {/* 
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-40">
+      {/* Floating Audience Reactions Container */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-50">
         <AnimatePresence>
-          {reactions.map((reaction) => (
-            <motion.div
-              key={reaction.id}
-              initial={{ opacity: 1, y: '80%', x: `${reaction.x}%`, scale: 0.7 }}
-              animate={{
-                opacity: [0.95, 1, 0],
-                y: ['75%', '40%', '8%'],
-                scale: [0.8, 1.4, 1.1]
-              }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 2.5, ease: "easeOut" }}
-              className="absolute flex flex-col items-center pointer-events-none drop-shadow-2"
-            >
-              <span className="text-3xl sm:text-4xl filter drop-shadow">{reaction.emoji}</span>
-              {reaction.label && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border shadow ${
-                  reaction.isNegative
-                    ? 'bg-rose-950/95 text-rose-300 border-rose-500/50'
-                    : 'bg-emerald-950/95 text-emerald-300 border-emerald-500/50'
-                }`}>
-                  {reaction.label}
-                </span>
-              )}
-            </motion.div>
-          ))}
+          {reactions && reactions.map((reaction) => {
+            const posX = reaction.x !== undefined ? `${reaction.x}%` : '50%';
+
+            return (
+              <motion.div
+                key={reaction.id}
+                initial={{ opacity: 0, y: '80%', x: posX, scale: 0.5 }}
+                animate={{
+                  opacity: [0, 1, 1, 0],
+                  y: ['75%', '45%', '20%'],
+                  scale: [0.7, 1.2, 1]
+                }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 1.8, ease: "easeOut" }}
+                className="absolute flex flex-col items-center pointer-events-none drop-shadow-xl"
+              >
+                <span className="text-4xl filter drop-shadow">{reaction.emoji}</span>
+                {reaction.label && (
+                  <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border shadow ${
+                    reaction.isNegative
+                      ? 'bg-rose-950/95 text-rose-300 border-rose-500/50'
+                      : 'bg-emerald-950/95 text-emerald-300 border-emerald-500/50'
+                  }`}>
+                    {reaction.label}
+                  </span>
+                )}
+              </motion.div>
+            );
+          })}
         </AnimatePresence>
       </div>
-      */}
+
 
 
       {/* Top Header: Room Title & 60-Minute Master Timer */}
