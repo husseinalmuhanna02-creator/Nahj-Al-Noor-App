@@ -107,6 +107,7 @@ var setDebaterQuestion = () => {};
 var sharedQuestionText = '';
 var sharedImageUrl = '';
 var sharedAuthorName = '';
+var getAppleEmojiUrl = (emoji: string) => `https://emojicdn.elk.sh/${encodeURIComponent(emoji)}?style=apple`;
 
 class DebateErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: any }> {
   state = { hasError: false, error: null };
