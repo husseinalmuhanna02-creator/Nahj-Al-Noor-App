@@ -895,19 +895,15 @@ function DebateStage({
         x
       };
 
-      setReactions(prev => [...prev.slice(-20), floatingRx]);
+      // setReactions(prev => [...prev.slice(-20), floatingRx]);
 
-      if (remoteRx.targetRole === 'debaterA') {
-        setDebaterAReactions(prev => ({
-          ...prev,
-          [remoteRx.emoji]: (prev[remoteRx.emoji] || 0) + 1
-        }));
-      } else if (remoteRx.targetRole === 'debaterB') {
-        setDebaterBReactions(prev => ({
-          ...prev,
-          [remoteRx.emoji]: (prev[remoteRx.emoji] || 0) + 1
-        }));
-      }
+          if (remoteRx.targetRole === 'debaterA') {
+      setReactionA(remoteRx.emoji);
+      setTimeout(() => setReactionA(null), 3000);
+    } else if (remoteRx.targetRole === 'debaterB') {
+      setReactionB(remoteRx.emoji);
+      setTimeout(() => setReactionB(null), 3000);
+    }
 
       setReactionCounts(prev => ({
         ...prev,
