@@ -1921,6 +1921,7 @@ const [sharedImageUrl, setSharedImageUrl] = useState('');
 const [sharedAuthorName, setSharedAuthorName] = useState('');
 
 // التصحيح في السطر 1901 (تبسيط العنوان)
+// 1. نشر السؤال
 const handlePublishQuestion = () => {
   if (!debaterQuestion.trim()) return;
   setSharedQuestionText(debaterQuestion);
@@ -1928,21 +1929,26 @@ const handlePublishQuestion = () => {
   setDebaterQuestion('');
 };
 
-// التصحيح في السطر 1910 (تبسيط العنوان)
+// 2. رفع وقراءة الصورة من جهاز المستخدم
 const handleImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
   const file = e.target.files?.[0];
   if (file) {
-    const url = URL.createObjectURL(file);
-    setSharedImageUrl(url);
-    setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setSharedImageUrl(reader.result as string);
+      setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
+    };
+    reader.readAsDataURL(file);
   }
 };
 
+// 3. مسح السؤال والصورة المعروضة
 const handleClearSharing = () => {
   setSharedQuestionText('');
   setSharedImageUrl('');
   setSharedAuthorName('');
 };
+
     
 useEffect(() => {
   if (currentRoom?.currentTurn) {
