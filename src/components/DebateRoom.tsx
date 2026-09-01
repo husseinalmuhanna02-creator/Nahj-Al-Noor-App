@@ -1249,27 +1249,28 @@ function DebateStage({
 
   return (
     <div className="relative w-full max-w-6xl mx-auto flex flex-col gap-4 text-white p-2 sm:p-4 select-none pb-24">
-      {/* Floating Audience Reactions Container */}
+            {/* Floating Audience Reactions Container - تم تعطيله لمنع الظهور في أعلى الشاشة */}
+      {/* 
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-40">
         <AnimatePresence>
           {reactions.map((reaction) => (
             <motion.div
               key={reaction.id}
               initial={{ opacity: 1, y: '80%', x: `${reaction.x}%`, scale: 0.7 }}
-              animate={{ 
-                opacity: [0.95, 1, 0], 
-                y: ['75%', '40%', '8%'], 
-                scale: [0.8, 1.4, 1.1] 
+              animate={{
+                opacity: [0.95, 1, 0],
+                y: ['75%', '40%', '8%'],
+                scale: [0.8, 1.4, 1.1]
               }}
               exit={{ opacity: 0 }}
               transition={{ duration: 2.5, ease: "easeOut" }}
-              className="absolute flex flex-col items-center pointer-events-none drop-shadow-2xl z-50"
+              className="absolute flex flex-col items-center pointer-events-none drop-shadow-2"
             >
               <span className="text-3xl sm:text-4xl filter drop-shadow">{reaction.emoji}</span>
               {reaction.label && (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border shadow-lg mt-0.5 whitespace-nowrap ${
-                  reaction.isNegative 
-                    ? 'bg-rose-950/95 text-rose-300 border-rose-500/50' 
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-black border shadow ${
+                  reaction.isNegative
+                    ? 'bg-rose-950/95 text-rose-300 border-rose-500/50'
                     : 'bg-emerald-950/95 text-emerald-300 border-emerald-500/50'
                 }`}>
                   {reaction.label}
@@ -1279,6 +1280,8 @@ function DebateStage({
           ))}
         </AnimatePresence>
       </div>
+      */}
+
 
       {/* Top Header: Room Title & 60-Minute Master Timer */}
       <header className="bg-slate-900/90 backdrop-blur-xl border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-5 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-4">
