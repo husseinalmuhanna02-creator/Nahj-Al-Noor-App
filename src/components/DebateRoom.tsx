@@ -1421,9 +1421,6 @@ function DebateStage({
           onClick={() => {
   setReactionA(item.emoji);
   setTimeout(() => setReactionA(null), 3000);
-  if (typeof sendDebateLiveReaction === 'function') {
-    sendDebateLiveReaction(item.emoji);
-  }
   setShowReactionsMenu(false);
 }}
 
@@ -1493,9 +1490,6 @@ function DebateStage({
           onClick={() => {
   setReactionB(item.emoji);
   setTimeout(() => setReactionB(null), 3000);
-  if (typeof sendDebateLiveReaction === 'function') {
-    sendDebateLiveReaction(item.emoji);
-  }
   setShowReactionsMenu(false);
 }}
 
