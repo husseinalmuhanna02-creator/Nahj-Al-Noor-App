@@ -1449,6 +1449,12 @@ function DebateStage({
           <span className={`absolute bottom-0 right-0 p-1.5 rounded-full border-2 border-slate-900 ${room?.currentTurn === 'debaterB' ? 'bg-emerald-500 text-slate-950 animate-pulse' : 'bg-red-500 text-white'}`}>
             {room?.currentTurn === 'debaterB' ? <Mic size={12} /> : <MicOff size={12} />}
           </span>
+          {reactionB && (
+  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 border-2 border-amber-400 text-3xl px-3 py-1 rounded-full shadow-2xl animate-bounce z-30">
+    {reactionB}
+  </div>
+)}
+          
         </div>
 
         <h3 className="mt-2 text-sm font-bold text-white truncate max-w-full">{room?.debaterB?.name || (isAr ? 'الطرف ب' : 'Debater B')}</h3>
