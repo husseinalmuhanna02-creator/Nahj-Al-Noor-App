@@ -1014,6 +1014,8 @@ function DebateStage({
   const [sharedQuestionText, setSharedQuestionText] = useState('');
   const [sharedImageUrl, setSharedImageUrl] = useState('');
   const [sharedAuthorName, setSharedAuthorName] = useState('');
+  const [reactionA, setReactionA] = useState<string | null>(null);
+  const [reactionB, setReactionB] = useState<string | null>(null);
   
 
   // Debaters display names for Recharts labels
