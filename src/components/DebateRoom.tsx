@@ -1419,11 +1419,14 @@ function DebateStage({
           key={idx}
           type="button"
           onClick={() => {
-            if (typeof sendDebateLiveReaction === 'function') {
-              sendDebateLiveReaction(item.emoji);
-            }
-            setShowReactionsMenu(false);
-          }}
+  setReactionA(item.emoji);
+  setTimeout(() => setReactionA(null), 3000);
+  if (typeof sendDebateLiveReaction === 'function') {
+    sendDebateLiveReaction(item.emoji);
+  }
+  setShowReactionsMenu(false);
+}}
+
           className="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center justify-center transition-all hover:scale-110 cursor-pointer"
           title={item.label}
         >
@@ -1488,11 +1491,14 @@ function DebateStage({
           key={idx}
           type="button"
           onClick={() => {
-            if (typeof sendDebateLiveReaction === 'function') {
-              sendDebateLiveReaction(item.emoji);
-            }
-            setShowReactionsMenu(false);
-          }}
+  setReactionB(item.emoji);
+  setTimeout(() => setReactionB(null), 3000);
+  if (typeof sendDebateLiveReaction === 'function') {
+    sendDebateLiveReaction(item.emoji);
+  }
+  setShowReactionsMenu(false);
+}}
+
           className="p-2 hover:bg-white/10 rounded-xl flex flex-col items-center justify-center transition-all hover:scale-110 cursor-pointer"
           title={item.label}
         >
