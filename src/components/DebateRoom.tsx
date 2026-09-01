@@ -1381,7 +1381,7 @@ function DebateStage({
         {room?.currentTurn === 'debaterA' ? <Mic size={12} /> : <MicOff size={12} />}
       </span>
       {reactionA && (
-  <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-900 border-2 border-amber-400 text-3xl px-3 py-1 rounded-full shadow-2xl animate-bounce z-30">
+  <div className="absolute -top-6 left-1/2 -translate-x-1/2 bg-slate-900 border-2 border-amber-400 text-3xl px-3 py-1 rounded-full shadow-2xl animate-bounce z-50">
     {reactionA}
   </div>
 )}
