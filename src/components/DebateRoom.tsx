@@ -99,6 +99,15 @@ import {
   subscribeToDebateLiveReactions
 } from '../services/debateService';
 import type { DebateRoomData, DebateRole, DebaterProfile, SharedDebateImage, DebateCategory, LiveReactionPayload } from '../types';
+var showReactionsMenu = false;
+var setShowReactionsMenu = () => {};
+var isDebater = false;
+var debaterQuestion = '';
+var setDebaterQuestion = () => {};
+var sharedQuestionText = '';
+var sharedImageUrl = '';
+var sharedAuthorName = '';
+
 class DebateErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: any }> {
   state = { hasError: false, error: null };
 
