@@ -2034,36 +2034,7 @@ const REACTION_OPTIONS = [
   { emoji: '✋', label: 'صفعة قوية' },
   { emoji: '🤡', label: 'مهرج' },
 ];
-  const [debaterQuestion, setDebaterQuestion] = useState('');
-  const [sharedQuestionText, setSharedQuestionText] = useState('');
-  const [sharedImageUrl, setSharedImageUrl] = useState('');
-  const [sharedAuthorName, setSharedAuthorName] = useState('');
-
-  const handlePublishQuestion = () => {
-    if (!debaterQuestion.trim()) return;
-    setSharedQuestionText(debaterQuestion);
-    setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
-    setDebaterQuestion('');
-  };
-
-  const handleImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSharedImageUrl(reader.result as string);
-        setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleClearSharing = () => {
-    setSharedQuestionText('');
-    setSharedImageUrl('');
-    setSharedAuthorName('');
-  };
-    
+   
 useEffect(() => {
   if (currentRoom?.currentTurn) {
     setTurnSecondsLeft(180);
