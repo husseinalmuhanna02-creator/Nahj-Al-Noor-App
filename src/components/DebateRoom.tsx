@@ -1249,23 +1249,26 @@ function DebateStage({
 
   return (
     <div className="relative w-full max-w-6xl mx-auto flex flex-col gap-4 text-white p-2 sm:p-4 select-none pb-24">
-      {/* Floating Audience Reactions Container */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-50">
+      {/* Floating Audience Reactions Container - محصور فوق بطاقات المناظر فقط */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
         <AnimatePresence>
           {reactions && reactions.map((reaction) => {
-            const posX = reaction.x !== undefined ? `${reaction.x}%` : '50%';
+            // توجيه الموقع الأفقي مباشرة فوق المناظر A أو B
+            const posX = reaction.target === 'A' || reaction.targetRole === 'debaterA' ? '25%' : 
+                         reaction.target === 'B' || reaction.targetRole === 'debaterB' ? '75%' : 
+                         reaction.x !== undefined ? `${reaction.x}%` : '50%';
 
             return (
               <motion.div
                 key={reaction.id}
-                initial={{ opacity: 0, y: '80%', x: posX, scale: 0.5 }}
+                initial={{ opacity: 0, y: '52%', x: posX, scale: 0.5 }}
                 animate={{
                   opacity: [0, 1, 1, 0],
-                  y: ['75%', '45%', '20%'],
-                  scale: [0.7, 1.2, 1]
+                  y: ['52%', '46%', '40%'], // حركة قصيرة فوق الكارت فقط ومستحيل تصل للهيدر
+                  scale: [0.6, 1.2, 1]
                 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 1.8, ease: "easeOut" }}
+                transition={{ duration: 1.2, ease: "easeOut" }}
                 className="absolute flex flex-col items-center pointer-events-none drop-shadow-xl"
               >
                 <span className="text-4xl filter drop-shadow">{reaction.emoji}</span>
@@ -1283,7 +1286,6 @@ function DebateStage({
           })}
         </AnimatePresence>
       </div>
-
 
 
       {/* Top Header: Room Title & 60-Minute Master Timer */}
