@@ -1237,6 +1237,13 @@ function DebateStage({
     ];
     return list.filter(i => i.count > 0).sort((a, b) => b.count - a.count);
   }, [debaterBReactions, isAr]);
+    useEffect(() => {
+    if (room && (room.status === 'ended' || room.isEnded)) {
+      alert(isAr ? 'تم إنهاء المناظرة من قبل المنشئ' : 'The debate has been ended by the host');
+      window.location.href = '/';
+    }
+  }, [room?.status, room?.isEnded]);
+  
   const [debaterQuestion, setDebaterQuestion] = useState('');
   const [sharedQuestionText, setSharedQuestionText] = useState('');
   const [sharedImageUrl, setSharedImageUrl] = useState('');
