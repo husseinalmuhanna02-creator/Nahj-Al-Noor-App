@@ -1249,25 +1249,36 @@ function DebateStage({
 
   return (
     <div className="relative w-full max-w-6xl mx-auto flex flex-col gap-4 text-white p-2 sm:p-4 select-none pb-24">
-      {/* Floating Audience Reactions Container - موجه بدقة للمناظر الأيمن والأيسر */}
+      {/* Floating Audience Reactions Container - موجه بدقة فوق بطاقة المناظر المحدد */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
         <AnimatePresence>
           {reactions && reactions.map((reaction) => {
-            // التحقق الدقيق من المستهدف
-            const isDebaterA = reaction.target === 'debaterA' || reaction.target === 'A' || reaction.targetRole === 'debaterA';
-            const isDebaterB = reaction.target === 'debaterB' || reaction.target === 'B' || reaction.targetRole === 'debaterB';
+            // قراءة مستهدف التفاعل بشكل كامل وموحد
+            const targetRaw = String(
+              reaction.target || 
+              reaction.targetRole || 
+              reaction.targetDebater || 
+              reaction.debater || 
+              ''
+            ).toLowerCase();
 
-            // المناظر أ (مشارك) على اليمين 75% - المناظر ب (الطرف ب) على اليسار 25%
-            const posX = isDebaterA ? '75%' : isDebaterB ? '25%' : '50%';
+            // فحص المستهدف
+            const isDebaterA = targetRaw.includes('debatera') || targetRaw === 'a' || targetRaw.includes('مشارك');
+            const isDebaterB = targetRaw.includes('debaterb') || targetRaw === 'b' || targetRaw.includes('الطرف ب');
+
+            // تحديد الموقع الأفقي:
+            // المناظر أ (مشارك) على اليمين عند 73%
+            // المناظر ب (الطرف ب) على اليسار عند 27%
+            const posX = isDebaterA ? '73%' : isDebaterB ? '27%' : (reaction.x !== undefined ? `${reaction.x}%` : '50%');
 
             return (
               <motion.div
                 key={reaction.id}
-                style={{ left: posX, top: '35%' }}
+                style={{ left: posX, top: '30%' }}
                 initial={{ opacity: 0, scale: 0.5, y: 0 }}
                 animate={{
                   opacity: [0, 1, 1, 0],
-                  y: [0, -30, -60], // حركة صعود قصيرة فوق صورة المناظر مباشرة
+                  y: [0, -25, -50], // حركة صعود خفيفة فوق صورة المناظر مباشرة
                   scale: [0.6, 1.2, 1]
                 }}
                 exit={{ opacity: 0 }}
