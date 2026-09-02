@@ -96,7 +96,7 @@ import {
   isDemoOrMockRoom,
   withTimeout,
   sendDebateLiveReaction,
-  subscribeToDebateLiveReactions
+  subscribeToDebateLiveReactions,
   subscribeToRoom,
 } from '../services/debateService';
 import type { DebateRoomData, DebateRole, DebaterProfile, SharedDebateImage, DebateCategory, LiveReactionPayload } from '../types';
