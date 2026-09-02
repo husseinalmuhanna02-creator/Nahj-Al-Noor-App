@@ -1244,19 +1244,31 @@ function DebateStage({
       window.location.href = '/';
     }
   }, [room?.status, room?.isEnded]);
+    const [debugLog, setDebugLog] = useState<string>("جاري بدء التشخيص...");
+
   useEffect(() => {
-    // فحص المعرّف سواء كان id أو roomId
     const activeRoomId = room?.id || (room as any)?.roomId;
-    if (!activeRoomId) return;
+    
+    if (!activeRoomId) {
+      setDebugLog("❌ لم يتم العثور على ID للغرفة! (الاستماع متوقف)");
+      return;
+    }
+
+    setDebugLog(`🟢 تم رصد الغرفة: ${activeRoomId} | جاري الاستماع...`);
 
     const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom) => {
       if (updatedRoom) {
+        const count = updatedRoom.debaters ? Object.keys(updatedRoom.debaters).length : 0;
+        setDebugLog(`⚡ تحديث جديد! ID: ${activeRoomId} | المناظرون: ${count}`);
         setRoom({ ...updatedRoom });
+      } else {
+        setDebugLog(`⚠️ استجابة فارغة (null) للغرفة: ${activeRoomId}`);
       }
     });
 
     return () => unsubscribe();
   }, [room?.id, (room as any)?.roomId]);
+
       
   const [debaterQuestion, setDebaterQuestion] = useState('');
   const [sharedQuestionText, setSharedQuestionText] = useState('');
