@@ -1249,23 +1249,25 @@ function DebateStage({
 
   return (
     <div className="relative w-full max-w-6xl mx-auto flex flex-col gap-4 text-white p-2 sm:p-4 select-none pb-24">
-      {/* Floating Audience Reactions Container - تم تصحيح الموقع باستخدام CSS style */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-40">
+      {/* Floating Audience Reactions Container - موجه بدقة للمناظر الأيمن والأيسر */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
         <AnimatePresence>
           {reactions && reactions.map((reaction) => {
-            // تحديد الموقع الأفقي فوق بطاقة المناظر
-            const posX = reaction.target === 'A' || reaction.targetRole === 'debaterA' ? '70%' : 
-                         reaction.target === 'B' || reaction.targetRole === 'debaterB' ? '30%' : 
-                         reaction.x !== undefined ? `${reaction.x}%` : '50%';
+            // التحقق الدقيق من المستهدف
+            const isDebaterA = reaction.target === 'debaterA' || reaction.target === 'A' || reaction.targetRole === 'debaterA';
+            const isDebaterB = reaction.target === 'debaterB' || reaction.target === 'B' || reaction.targetRole === 'debaterB';
+
+            // المناظر أ (مشارك) على اليمين 75% - المناظر ب (الطرف ب) على اليسار 25%
+            const posX = isDebaterA ? '75%' : isDebaterB ? '25%' : '50%';
 
             return (
               <motion.div
                 key={reaction.id}
-                style={{ left: posX, top: '35%' }} // تحديد الموقع بدقة في منتصف الشاشة فوق الكروت
+                style={{ left: posX, top: '35%' }}
                 initial={{ opacity: 0, scale: 0.5, y: 0 }}
                 animate={{
                   opacity: [0, 1, 1, 0],
-                  y: [0, -30, -60], // حركة صعود قصيرة للأعلى بمقدار 60 بكسل فقط
+                  y: [0, -30, -60], // حركة صعود قصيرة فوق صورة المناظر مباشرة
                   scale: [0.6, 1.2, 1]
                 }}
                 exit={{ opacity: 0 }}
