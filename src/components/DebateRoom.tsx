@@ -1246,40 +1246,16 @@ function DebateStage({
   }, [room?.status, room?.isEnded]);
     const [debugLog, setDebugLog] = useState<string>("جاري بدء التشخيص...");
 
-    useEffect(() => {
-    const rawId = room?.id || (room as any)?.roomId;
-    if (!rawId) {
-      setDebugLog("❌ لم يتم العثور على ID للغرفة!");
-      return;
+      useEffect(() => {
+    if (room) {
+      const keys = Object.keys(room).join(' | ');
+      const currentId = room.id || (room as any).roomId || 'لا يوجد';
+      setDebugLog(`🔑 ID الحالي: ${currentId} | المفاتيح: [${keys}]`);
+    } else {
+      setDebugLog("❌ كائن الغرفة room غير موجود (null)");
     }
+  }, [room]);
 
-    // تجهيز المعرف الأصلي والمعرف المجرّد بدون prefix
-    const cleanId = String(rawId).replace(/^room_/, '');
-    const activeRoomId = rawId;
-
-    setDebugLog(`🟢 جاري الاستماع للغرفة: ${activeRoomId}`);
-
-    const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom) => {
-      if (updatedRoom) {
-        const count = updatedRoom.debaters ? Object.keys(updatedRoom.debaters).length : 0;
-        setDebugLog(`⚡ تم الاتصال بـ Firestore! المناظرون: ${count}`);
-        setRoom({ ...updatedRoom });
-      } else {
-        // محاولة ثانية بالمعرف المجرّد إذا أرجعت الفايربيس null
-        subscribeToRoom(cleanId, (fallbackRoom) => {
-          if (fallbackRoom) {
-            const count = fallbackRoom.debaters ? Object.keys(fallbackRoom.debaters).length : 0;
-            setDebugLog(`⚡ تم الاتصال بالمعرف المجرّد (${cleanId})! المناظرون: ${count}`);
-            setRoom({ ...fallbackRoom });
-          } else {
-            setDebugLog(`⚠️ المستند غير موجود في الفايربيس للـ ID: ${activeRoomId}`);
-          }
-        });
-      }
-    });
-
-    return () => unsubscribe();
-  }, [room?.id, (room as any)?.roomId]);
 
       
   const [debaterQuestion, setDebaterQuestion] = useState('');
