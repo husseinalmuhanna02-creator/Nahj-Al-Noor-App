@@ -1302,6 +1302,25 @@ function DebateStage({
                                                     
   return (
     <div className="relative w-full max-w-6xl mx-auto flex flex-col gap-4 text-white p-2 sm:p-4 select-none pb-24">
+            {/* شريط تشخيص الأخطاء المباشر */}
+      <div style={{
+        position: 'fixed',
+        top: '0',
+        left: '0',
+        right: '0',
+        backgroundColor: '#000000',
+        color: '#00FF66',
+        padding: '10px',
+        zIndex: 999999,
+        fontSize: '11px',
+        direction: 'ltr',
+        borderBottom: '2px solid #00FF66',
+        textAlign: 'center',
+        fontWeight: 'bold'
+      }}>
+        {debugLog}
+      </div>
+      
       {/* Floating Audience Reactions Container - موقع محدد بدقة فوق صورة المناظر */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
         <AnimatePresence>
