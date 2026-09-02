@@ -1244,7 +1244,19 @@ function DebateStage({
       window.location.href = '/';
     }
   }, [room?.status, room?.isEnded]);
-  
+    useEffect(() => {
+    const activeRoomId = room?.id;
+    if (!activeRoomId) return;
+
+    const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom) => {
+      if (updatedRoom) {
+        setRoom(updatedRoom);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [room?.id]);
+      
   const [debaterQuestion, setDebaterQuestion] = useState('');
   const [sharedQuestionText, setSharedQuestionText] = useState('');
   const [sharedImageUrl, setSharedImageUrl] = useState('');
