@@ -1244,8 +1244,8 @@ function DebateStage({
       window.location.href = '/';
     }
   }, [room?.status, room?.isEnded]);
-        useEffect(() => {
-    const activeRoomId = roomId || room?.id;
+          useEffect(() => {
+    const activeRoomId = room?.id;
     if (!activeRoomId) return;
 
     const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom) => {
@@ -1255,7 +1255,7 @@ function DebateStage({
     });
 
     return () => unsubscribe();
-  }, [roomId, room?.id]);
+  }, [room?.id]);
       
   const [debaterQuestion, setDebaterQuestion] = useState('');
   const [sharedQuestionText, setSharedQuestionText] = useState('');
