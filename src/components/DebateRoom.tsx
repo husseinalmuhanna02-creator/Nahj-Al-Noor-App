@@ -2045,35 +2045,6 @@ useEffect(() => {
     return () => clearInterval(timer);
   }
 }, [currentRoom?.currentTurn]);
-  const [debaterQuestion, setDebaterQuestion] = useState('');
-  const [sharedQuestionText, setSharedQuestionText] = useState('');
-  const [sharedImageUrl, setSharedImageUrl] = useState('');
-  const [sharedAuthorName, setSharedAuthorName] = useState('');
-
-  const handlePublishQuestion = () => {
-    if (!debaterQuestion.trim()) return;
-    setSharedQuestionText(debaterQuestion);
-    setSharedAuthorName(isArabic ? 'مناظر' : 'Debater');
-    setDebaterQuestion('');
-  };
-
-  const handleImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSharedImageUrl(reader.result as string);
-        setSharedAuthorName(isArabic ? 'مناظر' : 'Debater');
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handleClearSharing = () => {
-    setSharedQuestionText('');
-    setSharedImageUrl('');
-    setSharedAuthorName('');
-  };
   
   // Filtering & Classification States
   const [selectedCategory, setSelectedCategory] = useState<DebateCategory>('all');
