@@ -1249,27 +1249,28 @@ function DebateStage({
 
   return (
     <div className="relative w-full max-w-6xl mx-auto flex flex-col gap-4 text-white p-2 sm:p-4 select-none pb-24">
-      {/* Floating Audience Reactions Container - محصور فوق بطاقات المناظر فقط */}
-      <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
+      {/* Floating Audience Reactions Container - تم تصحيح الموقع باستخدام CSS style */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden z-40">
         <AnimatePresence>
           {reactions && reactions.map((reaction) => {
-            // توجيه الموقع الأفقي مباشرة فوق المناظر A أو B
-            const posX = reaction.target === 'A' || reaction.targetRole === 'debaterA' ? '25%' : 
-                         reaction.target === 'B' || reaction.targetRole === 'debaterB' ? '75%' : 
+            // تحديد الموقع الأفقي فوق بطاقة المناظر
+            const posX = reaction.target === 'A' || reaction.targetRole === 'debaterA' ? '70%' : 
+                         reaction.target === 'B' || reaction.targetRole === 'debaterB' ? '30%' : 
                          reaction.x !== undefined ? `${reaction.x}%` : '50%';
 
             return (
               <motion.div
                 key={reaction.id}
-                initial={{ opacity: 0, y: '52%', x: posX, scale: 0.5 }}
+                style={{ left: posX, top: '35%' }} // تحديد الموقع بدقة في منتصف الشاشة فوق الكروت
+                initial={{ opacity: 0, scale: 0.5, y: 0 }}
                 animate={{
                   opacity: [0, 1, 1, 0],
-                  y: ['52%', '46%', '40%'], // حركة قصيرة فوق الكارت فقط ومستحيل تصل للهيدر
+                  y: [0, -30, -60], // حركة صعود قصيرة للأعلى بمقدار 60 بكسل فقط
                   scale: [0.6, 1.2, 1]
                 }}
                 exit={{ opacity: 0 }}
-                transition={{ duration: 1.2, ease: "easeOut" }}
-                className="absolute flex flex-col items-center pointer-events-none drop-shadow-xl"
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                className="absolute -translate-x-1/2 flex flex-col items-center pointer-events-none drop-shadow-xl"
               >
                 <span className="text-4xl filter drop-shadow">{reaction.emoji}</span>
                 {reaction.label && (
