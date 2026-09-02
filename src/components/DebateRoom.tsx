@@ -1249,36 +1249,47 @@ function DebateStage({
 
   return (
     <div className="relative w-full max-w-6xl mx-auto flex flex-col gap-4 text-white p-2 sm:p-4 select-none pb-24">
-      {/* Floating Audience Reactions Container - موجه بدقة فوق بطاقة المناظر المحدد */}
+      {/* Floating Audience Reactions Container - موقع محدد بدقة فوق صورة المناظر */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden z-30">
         <AnimatePresence>
           {reactions && reactions.map((reaction) => {
-            // قراءة مستهدف التفاعل بشكل كامل وموحد
-            const targetRaw = String(
-              reaction.target || 
+            // تجميع كل القيم المحتملة لتحديد المستهدف
+            const targetVal = String(
               reaction.targetRole || 
+              reaction.target || 
               reaction.targetDebater || 
+              reaction.targetDebaterName || 
               reaction.debater || 
               ''
             ).toLowerCase();
 
-            // فحص المستهدف
-            const isDebaterA = targetRaw.includes('debatera') || targetRaw === 'a' || targetRaw.includes('مشارك');
-            const isDebaterB = targetRaw.includes('debaterb') || targetRaw === 'b' || targetRaw.includes('الطرف ب');
+            // فحص دقيق للطرف المستهدف
+            const isDebaterA = 
+              targetVal.includes('debatera') || 
+              targetVal === 'a' || 
+              targetVal.includes('مشارك') ||
+              (typeof debaterA !== 'undefined' && debaterA && (reaction.target === debaterA?.id || reaction.target === debaterA?.uid));
 
-            // تحديد الموقع الأفقي:
+            const isDebaterB = 
+              targetVal.includes('debaterb') || 
+              targetVal === 'b' || 
+              targetVal.includes('الطرف ب') || 
+              targetVal.includes('طرف') ||
+              (typeof debaterB !== 'undefined' && debaterB && (reaction.target === debaterB?.id || reaction.target === debaterB?.uid));
+
+            // إلغاء العشوائية تماماً والتثبيت على أفق الصور:
             // المناظر أ (مشارك) على اليمين عند 73%
             // المناظر ب (الطرف ب) على اليسار عند 27%
-            const posX = isDebaterA ? '73%' : isDebaterB ? '27%' : (reaction.x !== undefined ? `${reaction.x}%` : '50%');
+            const posX = isDebaterA ? '73%' : isDebaterB ? '27%' : '50%';
 
             return (
               <motion.div
                 key={reaction.id}
-                style={{ left: posX, top: '30%' }}
+                style={{ left: posX, top: '38%' }} // تم ضبط الارتفاع ليكون فوق دائرة الصورة مباشرة
                 initial={{ opacity: 0, scale: 0.5, y: 0 }}
                 animate={{
                   opacity: [0, 1, 1, 0],
-                  y: [0, -25, -50], // حركة صعود خفيفة فوق صورة المناظر مباشرة
+                  y: [0, -30, -60], // يرتفع للأعلى بانسجام من فوق الصورة
                   scale: [0.6, 1.2, 1]
                 }}
                 exit={{ opacity: 0 }}
@@ -1300,6 +1311,7 @@ function DebateStage({
           })}
         </AnimatePresence>
       </div>
+
 
 
       {/* Top Header: Room Title & 60-Minute Master Timer */}
