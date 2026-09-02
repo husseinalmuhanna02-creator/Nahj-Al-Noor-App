@@ -1106,3 +1106,15 @@ export async function recordDebaterReactionInLeaderboard(params: {
 
   saveLeaderboardEntries(entries);
 }
+
+// استماع لحظي لتحديثات الغرفة (المناظرين والمستمعين والحالة)
+export const subscribeToRoom = (roomId: string, callback: (room: any) => void) => {
+  const roomRef = doc(db, 'debateRooms', roomId);
+  return onSnapshot(roomRef, (snapshot) => {
+    if (snapshot.exists()) {
+      callback({ id: snapshot.id, ...snapshot.data() });
+    } else {
+      callback(null);
+    }
+  });
+};
