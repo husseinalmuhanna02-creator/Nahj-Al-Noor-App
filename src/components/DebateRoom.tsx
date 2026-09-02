@@ -1244,8 +1244,8 @@ function DebateStage({
       window.location.href = '/';
     }
   }, [room?.status, room?.isEnded]);
-      useEffect(() => {
-    const activeRoomId = props?.roomId || props?.id || roomId || room?.id;
+        useEffect(() => {
+    const activeRoomId = roomId || room?.id;
     if (!activeRoomId) return;
 
     const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom) => {
@@ -1255,7 +1255,7 @@ function DebateStage({
     });
 
     return () => unsubscribe();
-  }, [props?.roomId, props?.id, roomId, room?.id]);
+  }, [roomId, room?.id]);
       
   const [debaterQuestion, setDebaterQuestion] = useState('');
   const [sharedQuestionText, setSharedQuestionText] = useState('');
