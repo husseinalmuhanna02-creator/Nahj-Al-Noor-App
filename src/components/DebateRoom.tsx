@@ -102,11 +102,6 @@ import type { DebateRoomData, DebateRole, DebaterProfile, SharedDebateImage, Deb
 var showReactionsMenu = false;
 var setShowReactionsMenu = () => {};
 var isDebater = false;
-var debaterQuestion = '';
-var setDebaterQuestion = () => {};
-var sharedQuestionText = '';
-var sharedImageUrl = '';
-var sharedAuthorName = '';
 var getAppleEmojiUrl = (emoji: string) => `https://emojicdn.elk.sh/${encodeURIComponent(emoji)}?style=apple`;
 
 class DebateErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean; error: any }> {
@@ -1006,10 +1001,6 @@ function DebateStage({
 ];
   
   const [showReactionsMenu, setShowReactionsMenu] = useState(false);
-  const [debaterQuestion, setDebaterQuestion] = useState('');
-  const [sharedQuestionText, setSharedQuestionText] = useState('');
-  const [sharedImageUrl, setSharedImageUrl] = useState('');
-  const [sharedAuthorName, setSharedAuthorName] = useState('');
   const [reactionA, setReactionA] = useState<string | null>(null);
   const [reactionB, setReactionB] = useState<string | null>(null);
   
