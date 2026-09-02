@@ -2034,39 +2034,35 @@ const REACTION_OPTIONS = [
   { emoji: '✋', label: 'صفعة قوية' },
   { emoji: '🤡', label: 'مهرج' },
 ];
-const [sharedQuestionText, setSharedQuestionText] = useState('');
-const [sharedImageUrl, setSharedImageUrl] = useState('');
-const [sharedAuthorName, setSharedAuthorName] = useState('');
+  const [debaterQuestion, setDebaterQuestion] = useState('');
+  const [sharedQuestionText, setSharedQuestionText] = useState('');
+  const [sharedImageUrl, setSharedImageUrl] = useState('');
+  const [sharedAuthorName, setSharedAuthorName] = useState('');
 
-// التصحيح في السطر 1901 (تبسيط العنوان)
-// 1. نشر السؤال
-const handlePublishQuestion = () => {
-  if (!debaterQuestion.trim()) return;
-  setSharedQuestionText(debaterQuestion);
-  setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
-  setDebaterQuestion('');
-};
+  const handlePublishQuestion = () => {
+    if (!debaterQuestion.trim()) return;
+    setSharedQuestionText(debaterQuestion);
+    setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
+    setDebaterQuestion('');
+  };
 
-// 2. رفع وقراءة الصورة من جهاز المستخدم
-const handleImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const file = e.target.files?.[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setSharedImageUrl(reader.result as string);
-      setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
-    };
-    reader.readAsDataURL(file);
-  }
-};
+  const handleImageSelected = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSharedImageUrl(reader.result as string);
+        setSharedAuthorName(isAr ? 'مناظر' : 'Debater');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
-// 3. مسح السؤال والصورة المعروضة
-const handleClearSharing = () => {
-  setSharedQuestionText('');
-  setSharedImageUrl('');
-  setSharedAuthorName('');
-};
-const [debaterQuestion, setDebaterQuestion] = useState('');
+  const handleClearSharing = () => {
+    setSharedQuestionText('');
+    setSharedImageUrl('');
+    setSharedAuthorName('');
+  };
     
 useEffect(() => {
   if (currentRoom?.currentTurn) {
