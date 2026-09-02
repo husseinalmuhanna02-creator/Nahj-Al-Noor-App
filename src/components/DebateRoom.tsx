@@ -97,6 +97,7 @@ import {
   withTimeout,
   sendDebateLiveReaction,
   subscribeToDebateLiveReactions
+  subscribeToRoom,
 } from '../services/debateService';
 import type { DebateRoomData, DebateRole, DebaterProfile, SharedDebateImage, DebateCategory, LiveReactionPayload } from '../types';
 var showReactionsMenu = false;
