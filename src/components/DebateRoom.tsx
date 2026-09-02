@@ -1244,18 +1244,18 @@ function DebateStage({
       window.location.href = '/';
     }
   }, [room?.status, room?.isEnded]);
-    useEffect(() => {
-    const activeRoomId = room?.id;
+      useEffect(() => {
+    const activeRoomId = props?.roomId || props?.id || roomId || room?.id;
     if (!activeRoomId) return;
 
     const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom) => {
       if (updatedRoom) {
-        setRoom(updatedRoom);
+        setRoom({ ...updatedRoom });
       }
     });
 
     return () => unsubscribe();
-  }, [room?.id]);
+  }, [props?.roomId, props?.id, roomId, room?.id]);
       
   const [debaterQuestion, setDebaterQuestion] = useState('');
   const [sharedQuestionText, setSharedQuestionText] = useState('');
