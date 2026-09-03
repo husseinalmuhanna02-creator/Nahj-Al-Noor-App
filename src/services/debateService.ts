@@ -1096,10 +1096,9 @@ export async function recordDebaterReactionInLeaderboard(params: {
 export const subscribeToRoom = (roomId: string, callback: (room: any, errorMsg?: string) => void) => {
   const cleanId = String(roomId).replace(/^room_/, '');
   const numId = Number(cleanId);
-  const roomsRef = collection(db, 'debateRooms');
+  const roomsRef = collection(db, 'debate_rooms');
 
-  // البحث بجميع أنواع المعرفات المحتملة (نص ورقم)
-  const searchValues: any[] = [roomId, cleanId];
+  const searchValues: any[] = [roomId, cleanId, `room_${cleanId}`];
   if (!isNaN(numId)) searchValues.push(numId);
 
   const q = query(roomsRef, where('id', 'in', searchValues));
@@ -1109,10 +1108,9 @@ export const subscribeToRoom = (roomId: string, callback: (room: any, errorMsg?:
       const docSnap = snapshot.docs[0];
       callback({ id: docSnap.id, ...docSnap.data() });
     } else {
-      // فحص كاشف للمستندات المتوفرة في قاعدة البيانات
       getDocs(roomsRef).then((allDocs) => {
         if (allDocs.empty) {
-          callback(null, "مجموعة debateRooms فارغة تماماً بالفايربيس!");
+          callback(null, "مجموعة debate_rooms فارغة تماماً بالفايربيس!");
         } else {
           const sampleIds = allDocs.docs.map(d => d.data().id || d.id).slice(0, 3).join(', ');
           callback(null, `لم يطابق المعرف. المتاح بالفايربيس: [${sampleIds}]`);
@@ -1124,4 +1122,3 @@ export const subscribeToRoom = (roomId: string, callback: (room: any, errorMsg?:
     callback(null, error.message);
   });
 };
-
