@@ -1246,15 +1246,28 @@ function DebateStage({
   }, [room?.status, room?.isEnded]);
     const [debugLog, setDebugLog] = useState<string>("جاري بدء التشخيص...");
 
-      useEffect(() => {
-    if (room) {
-      const keys = Object.keys(room).join(' | ');
-      const currentId = room.id || (room as any).roomId || 'لا يوجد';
-      setDebugLog(`🔑 ID الحالي: ${currentId} | المفاتيح: [${keys}]`);
-    } else {
-      setDebugLog("❌ كائن الغرفة room غير موجود (null)");
+  useEffect(() => {
+    const activeRoomId = room?.id;
+    if (!activeRoomId) {
+      setDebugLog("❌ لم يتم العثور على id للغرفة");
+      return;
     }
-  }, [room]);
+
+    setDebugLog(`🟢 جاري الاستماع اللحظي للغرفة: ${activeRoomId}`);
+
+    const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom) => {
+      if (updatedRoom) {
+        const hasDebaterB = updatedRoom.debaterB ? "انضم ✅" : "لم ينضم بعد ❌";
+        setDebugLog(`⚡ تحديث واصل! المناظر الثاني: ${hasDebaterB} | الحالة: ${updatedRoom.status}`);
+        setRoom({ ...updatedRoom });
+      } else {
+        setDebugLog(`⚠️ لم يجد Firestore مستند الغرفة: ${activeRoomId}`);
+      }
+    });
+
+    return () => unsubscribe();
+  }, [room?.id]);
+
 
 
       
