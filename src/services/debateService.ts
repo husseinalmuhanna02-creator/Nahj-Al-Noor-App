@@ -284,146 +284,40 @@ export async function joinDebateRoom(
   user: { uid: string; name: string; avatar?: string },
   desiredRole: DebateRole
 ): Promise<{ success: boolean; role: DebateRole; room: DebateRoomData | null; message?: string }> {
-  let room: DebateRoomData | null = null;
+  try {
+    const docRef = doc(db, 'debate_rooms', roomId);
+    const docSnap = await getDoc(docRef);
 
-  // Read current room state with 1000ms timeout
-  if (isFirebaseEnabled()) {
-    try {
-      const readPromise = (async () => {
-        try {
-          const roomRef = ref(rtdb, `debate_rooms/${roomId}`);
-          const snap = await get(roomRef);
-          if (snap.exists()) {
-            return snap.val() as DebateRoomData;
-          }
-        } catch (e) {
-          console.warn('[DebateService] RTDB get failed:', e);
-        }
-
-        try {
-          const docRef = doc(db, 'debate_rooms', roomId);
-          const snap = await getDoc(docRef);
-          if (snap.exists()) {
-            return snap.data() as DebateRoomData;
-          }
-        } catch (e) {
-          console.warn('[DebateService] Firestore get failed:', e);
-        }
-        return null;
-      })();
-
-      room = await withTimeout(readPromise, 1000, null);
-    } catch (e) {
-      console.warn('[DebateService] Network get room timeout:', e);
+    if (!docSnap.exists()) {
+      return { success: false, role: 'listener', room: null, message: 'الغرفة غير موجودة' };
     }
-  }
 
-  if (!room) {
-    room = getLocalRooms()[roomId] || null;
-  }
+    let roomData = docSnap.data() as DebateRoomData;
 
-  if (!room) {
-    return { success: false, role: 'listener', room: null, message: 'الغرفة غير موجودة' };
-  }
-
-  if (room.status === 'ended') {
-    return { success: false, role: 'listener', room, message: 'انتهت مدة هذه المناظرة وتم إغلاق الغرفة' };
-  }
-
-  let finalRole: DebateRole = desiredRole;
-  const updates: Partial<DebateRoomData> = {};
-
-  if (desiredRole === 'debaterA') {
-    if (!room.debaterA || room.debaterA.uid === user.uid) {
-      updates.debaterA = {
+    // تحديث مقعد المناظر الثاني
+    if (desiredRole === 'debaterB' || !roomData.debaterB) {
+      roomData.debaterB = {
         uid: user.uid,
-        name: user.name,
-        avatar: user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
-        role: 'debaterA',
-        joinedAt: Date.now()
-      };
-      finalRole = 'debaterA';
-    } else {
-      // Slot A taken, fallback to listener or Debater B if free
-      if (!room.debaterB) {
-        finalRole = 'debaterB';
-        updates.debaterB = {
-          uid: user.uid,
-          name: user.name,
-          avatar: user.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
-          role: 'debaterB',
-          joinedAt: Date.now()
-        };
-      } else {
-        finalRole = 'listener';
-        updates.listenersCount = (room.listenersCount || 0) + 1;
-      }
-    }
-  } else if (desiredRole === 'debaterB') {
-    if (!room.debaterB || room.debaterB.uid === user.uid) {
-      updates.debaterB = {
-        uid: user.uid,
-        name: user.name,
-        avatar: user.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+        name: user.name || 'المناظر الثاني',
+        avatar: user.avatar || '',
         role: 'debaterB',
         joinedAt: Date.now()
       };
-      finalRole = 'debaterB';
-    } else {
-      finalRole = 'listener';
-      updates.listenersCount = (room.listenersCount || 0) + 1;
-    }
-  } else {
-    finalRole = 'listener';
-    const currentListeners = room.listeners || [];
-    const exists = currentListeners.some(l => l.uid === user.uid);
-    const updatedListeners = exists
-      ? currentListeners
-      : [
-          ...currentListeners,
-          {
-            uid: user.uid,
-            name: user.name || 'مستمع',
-            avatar: user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
-            joinedAt: Date.now()
-          }
-        ];
-    updates.listeners = updatedListeners;
-    updates.listenersCount = updatedListeners.length;
-  }
-
-  // If both debaters are now present and status was waiting, activate debate!
-  const hasA = !!(updates.debaterA || room.debaterA);
-  const hasB = !!(updates.debaterB || room.debaterB);
-  if (hasA && hasB && room.status === 'waiting') {
-    updates.status = 'active';
-    updates.startedAt = Date.now();
-    updates.turnStartTime = Date.now();
-    updates.currentTurn = 'debaterA';
-    updates.roundNumber = 1;
-  }
-
-  const updatedRoom: DebateRoomData = { ...room, ...updates };
-  saveLocalRoom(updatedRoom);
-
-  // Sync updates
-  if (isFirebaseEnabled()) {
-    try {
-      const roomRef = ref(rtdb, `debate_rooms/${roomId}`);
-      await update(roomRef, updates);
-    } catch (e) {
-      console.warn('[DebateService] RTDB update error:', e);
     }
 
-    try {
-      const docRef = doc(db, 'debate_rooms', roomId);
-      await updateDoc(docRef, updates);
-    } catch (e) {
-      console.warn('[DebateService] Firestore update error:', e);
-    }
-  }
+    // التحديث اللحظي في Firestore
+    await setDoc(docRef, roomData, { merge: true });
+    saveLocalRoom(roomData);
 
-  return { success: true, role: finalRole, room: updatedRoom };
+    return { 
+      success: true, 
+      role: roomData.debaterB?.uid === user.uid ? 'debaterB' : 'listener', 
+      room: roomData 
+    };
+  } catch (error: any) {
+    console.error("❌ خطأ الانضمام للغرفة في Firestore:", error);
+    return { success: false, role: 'listener', room: null, message: error.message };
+  }
 }
 
 /**
