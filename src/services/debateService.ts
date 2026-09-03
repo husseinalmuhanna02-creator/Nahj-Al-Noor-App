@@ -262,32 +262,15 @@ export async function createDebateRoom(params: {
     streamCallId: roomId
   };
 
-  // 1. Immediately save locally to guarantee 0-latency feedback
+  // 1. الحفظ محلياً
   saveLocalRoom(newRoom);
 
-  // 2. Try Firebase with strict timeout guard so it never hangs or blocks the UI
-  if (isFirebaseEnabled()) {
-    try {
-      const syncPromise = (async () => {
-        try {
-          const roomRef = ref(rtdb, `debate_rooms/${roomId}`);
-          await set(roomRef, newRoom);
-        } catch (e) {
-          console.warn('[DebateService] RTDB write error:', e);
-        }
-        try {
-          const docRef = doc(db, 'debate_rooms', roomId);
-          await setDoc(docRef, newRoom);
-        } catch (e) {
-          console.warn('[DebateService] Firestore write error:', e);
-        }
-      })();
-
-      // Max 1000ms network wait
-      await withTimeout(syncPromise, 1000, null);
-    } catch (err) {
-      console.warn('[DebateService] Network sync timed out or failed, using local room:', err);
-    }
+  // 2. الحفظ المباشر في Firestore
+  try {
+    await setDoc(doc(db, 'debateRooms', newRoom.id), newRoom);
+    console.log("✅ تم حفظ الغرفة في Firestore:", newRoom.id);
+  } catch (e) {
+    console.error("❌ خطأ حفظ الغرفة في Firestore:", e);
   }
 
   return newRoom;
