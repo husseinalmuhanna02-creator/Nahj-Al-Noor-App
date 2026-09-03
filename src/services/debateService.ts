@@ -20,6 +20,7 @@ import {
   onSnapshot, 
   addDoc, 
   query, 
+  where,
   orderBy, 
   limit 
 } from 'firebase/firestore';
