@@ -1109,36 +1109,36 @@ export async function recordDebaterReactionInLeaderboard(params: {
   saveLeaderboardEntries(entries);
 }
 
-// استماع لحظي لتحديثات الغرفة //
+// استماع لحظي لتحديثات الغرفة مع تشخيص كامل //
 export const subscribeToRoom = (roomId: string, callback: (room: any, errorMsg?: string) => void) => {
   const cleanId = String(roomId).replace(/^room_/, '');
+  const numId = Number(cleanId);
   const roomsRef = collection(db, 'debateRooms');
 
-  // الاستعلام عن الحقل id بكلا الصيغتين (مع room_ وبدونها)
-  const q = query(roomsRef, where('id', 'in', [roomId, cleanId]));
+  // البحث بجميع أنواع المعرفات المحتملة (نص ورقم)
+  const searchValues: any[] = [roomId, cleanId];
+  if (!isNaN(numId)) searchValues.push(numId);
+
+  const q = query(roomsRef, where('id', 'in', searchValues));
 
   return onSnapshot(q, (snapshot) => {
     if (!snapshot.empty) {
       const docSnap = snapshot.docs[0];
       callback({ id: docSnap.id, ...docSnap.data() });
     } else {
-      // محاولة جلب المستند مباشرة بالمعرفين
-      getDoc(doc(db, 'debateRooms', roomId)).then((s1) => {
-        if (s1.exists()) {
-          callback({ id: s1.id, ...s1.data() });
+      // فحص كاشف للمستندات المتوفرة في قاعدة البيانات
+      getDocs(roomsRef).then((allDocs) => {
+        if (allDocs.empty) {
+          callback(null, "مجموعة debateRooms فارغة تماماً بالفايربيس!");
         } else {
-          getDoc(doc(db, 'debateRooms', cleanId)).then((s2) => {
-            if (s2.exists()) {
-              callback({ id: s2.id, ...s2.data() });
-            } else {
-              callback(null, "المستند غير موجود نهائياً في debateRooms");
-            }
-          });
+          const sampleIds = allDocs.docs.map(d => d.data().id || d.id).slice(0, 3).join(', ');
+          callback(null, `لم يطابق المعرف. المتاح بالفايربيس: [${sampleIds}]`);
         }
-      });
+      }).catch(err => callback(null, err.message));
     }
   }, (error) => {
     console.error("خطأ Firestore:", error);
     callback(null, error.message);
   });
 };
+
