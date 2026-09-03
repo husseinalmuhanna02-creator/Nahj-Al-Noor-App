@@ -1108,13 +1108,30 @@ export async function recordDebaterReactionInLeaderboard(params: {
 }
 
 // استماع لحظي لتحديثات الغرفة (المناظرين والمستمعين والحالة)
+// استماع لحظي لتحديثات الغرفة (المناظرين والمستمعين والحالة) //
 export const subscribeToRoom = (roomId: string, callback: (room: any) => void) => {
-  const roomRef = doc(db, 'debateRooms', roomId);
-  return onSnapshot(roomRef, (snapshot) => {
-    if (snapshot.exists()) {
-      callback({ id: snapshot.id, ...snapshot.data() });
+  // البحث بالحقل id بدلاً من معرف المستند المباشر
+  const roomsRef = collection(db, 'debateRooms');
+  const q = query(roomsRef, where('id', '==', roomId));
+
+  return onSnapshot(q, (snapshot) => {
+    if (!snapshot.empty) {
+      const docSnap = snapshot.docs[0];
+      callback({ id: docSnap.id, ...docSnap.data() });
     } else {
-      callback(null);
+      // محاولة احتياطية في حال كان المستند مخزناً بـ ID مباشر
+      const docRef = doc(db, 'debateRooms', roomId);
+      getDoc(docRef).then((docSnap) => {
+        if (docSnap.exists()) {
+          callback({ id: docSnap.id, ...docSnap.data() });
+        } else {
+          callback(null);
+        }
+      });
     }
+  }, (error) => {
+    console.error("خطأ في الاستماع للفايربيس:", error);
+    callback(null);
   });
 };
+
