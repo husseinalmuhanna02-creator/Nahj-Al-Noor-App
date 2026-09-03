@@ -1108,31 +1108,36 @@ export async function recordDebaterReactionInLeaderboard(params: {
   saveLeaderboardEntries(entries);
 }
 
-// استماع لحظي لتحديثات الغرفة (المناظرين والمستمعين والحالة)
-// استماع لحظي لتحديثات الغرفة (المناظرين والمستمعين والحالة) //
-export const subscribeToRoom = (roomId: string, callback: (room: any) => void) => {
-  // البحث بالحقل id بدلاً من معرف المستند المباشر
+// استماع لحظي لتحديثات الغرفة //
+export const subscribeToRoom = (roomId: string, callback: (room: any, errorMsg?: string) => void) => {
+  const cleanId = String(roomId).replace(/^room_/, '');
   const roomsRef = collection(db, 'debateRooms');
-  const q = query(roomsRef, where('id', '==', roomId));
+
+  // الاستعلام عن الحقل id بكلا الصيغتين (مع room_ وبدونها)
+  const q = query(roomsRef, where('id', 'in', [roomId, cleanId]));
 
   return onSnapshot(q, (snapshot) => {
     if (!snapshot.empty) {
       const docSnap = snapshot.docs[0];
       callback({ id: docSnap.id, ...docSnap.data() });
     } else {
-      // محاولة احتياطية في حال كان المستند مخزناً بـ ID مباشر
-      const docRef = doc(db, 'debateRooms', roomId);
-      getDoc(docRef).then((docSnap) => {
-        if (docSnap.exists()) {
-          callback({ id: docSnap.id, ...docSnap.data() });
+      // محاولة جلب المستند مباشرة بالمعرفين
+      getDoc(doc(db, 'debateRooms', roomId)).then((s1) => {
+        if (s1.exists()) {
+          callback({ id: s1.id, ...s1.data() });
         } else {
-          callback(null);
+          getDoc(doc(db, 'debateRooms', cleanId)).then((s2) => {
+            if (s2.exists()) {
+              callback({ id: s2.id, ...s2.data() });
+            } else {
+              callback(null, "المستند غير موجود نهائياً في debateRooms");
+            }
+          });
         }
       });
     }
   }, (error) => {
-    console.error("خطأ في الاستماع للفايربيس:", error);
-    callback(null);
+    console.error("خطأ Firestore:", error);
+    callback(null, error.message);
   });
 };
-
