@@ -1246,30 +1246,24 @@ function DebateStage({
   }, [room?.status, room?.isEnded]);
     const [debugLog, setDebugLog] = useState<string>("جاري بدء التشخيص...");
 
-  useEffect(() => {
+    useEffect(() => {
     const activeRoomId = room?.id;
-    if (!activeRoomId) {
-      setDebugLog("❌ لم يتم العثور على id للغرفة");
-      return;
-    }
+    if (!activeRoomId) return;
 
-    setDebugLog(`🟢 جاري الاستماع اللحظي للغرفة: ${activeRoomId}`);
+    setDebugLog(`🟢 جاري الاستماع للغرفة: ${activeRoomId}`);
 
-    const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom) => {
+    const unsubscribe = subscribeToRoom(activeRoomId, (updatedRoom, errorMsg) => {
       if (updatedRoom) {
         const hasDebaterB = updatedRoom.debaterB ? "انضم ✅" : "لم ينضم بعد ❌";
-        setDebugLog(`⚡ تحديث واصل! المناظر الثاني: ${hasDebaterB} | الحالة: ${updatedRoom.status}`);
+        setDebugLog(`⚡ تم الاتصال! المناظر الثاني: ${hasDebaterB}`);
         setRoom({ ...updatedRoom });
       } else {
-        setDebugLog(`⚠️ لم يجد Firestore مستند الغرفة: ${activeRoomId}`);
+        setDebugLog(`⚠️ خطأ: ${errorMsg || 'فشل الاتصال بالفايربيس'}`);
       }
     });
 
     return () => unsubscribe();
   }, [room?.id]);
-
-
-
       
   const [debaterQuestion, setDebaterQuestion] = useState('');
   const [sharedQuestionText, setSharedQuestionText] = useState('');
