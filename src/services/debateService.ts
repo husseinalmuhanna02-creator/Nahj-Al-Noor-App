@@ -294,7 +294,7 @@ export async function joinDebateRoom(
 
     let roomData = docSnap.data() as DebateRoomData;
 
-    // تحديث مقعد المناظر الثاني
+    // 1. تحديث بيانات المناظر الثاني
     if (desiredRole === 'debaterB' || !roomData.debaterB) {
       roomData.debaterB = {
         uid: user.uid,
@@ -305,13 +305,26 @@ export async function joinDebateRoom(
       };
     }
 
-    // التحديث اللحظي في Firestore
+    // 2. إذا اكتمل الطرفان، تغيير حالة الغرفة إلى نشطة (active) وبدء العداد اللحظي
+    const hasA = !!roomData.debaterA;
+    const hasB = !!roomData.debaterB;
+
+    if (hasA && hasB && (roomData.status === 'waiting' || !roomData.status)) {
+      const now = Date.now();
+      roomData.status = 'active';
+      roomData.startedAt = now;
+      roomData.turnStartTime = now;
+      roomData.currentTurn = 'debaterA';
+      roomData.roundNumber = 1;
+    }
+
+    // 3. التحديث اللحظي في Firestore والذاكرة المحلية
     await setDoc(docRef, roomData, { merge: true });
     saveLocalRoom(roomData);
 
     return { 
       success: true, 
-      role: roomData.debaterB?.uid === user.uid ? 'debaterB' : 'listener', 
+      role: roomData.debaterB?.uid === user.uid ? 'debaterB' : (roomData.debaterA?.uid === user.uid ? 'debaterA' : 'listener'), 
       room: roomData 
     };
   } catch (error: any) {
