@@ -267,7 +267,7 @@ export async function createDebateRoom(params: {
 
   // 2. الحفظ المباشر في Firestore
   try {
-    await setDoc(doc(db, 'debateRooms', newRoom.id), newRoom);
+    await setDoc(doc(db, 'debate_rooms', newRoom.id), newRoom);
     console.log("✅ تم حفظ الغرفة في Firestore:", newRoom.id);
   } catch (e) {
     console.error("❌ خطأ حفظ الغرفة في Firestore:", e);
