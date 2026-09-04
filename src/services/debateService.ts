@@ -369,10 +369,10 @@ export async function switchDebateTurn(roomId: string, currentTurn: 'debaterA' |
  * Share an image from gallery to the entire debate arena
  */
 export async function shareDebateImage(
-  roomId: string, 
-  imageData: { url: string; caption?: string; sharedBy: string; sharedByRole: 'debaterA' | 'debaterB' }
+  roomId: string,
+  imageData: { url: string; caption?: string; sharedBy: string; sharedByRole: 'debaterA' | 'debaterB' | 'listener' }
 ): Promise<void> {
-  const sharedImage: SharedDebateImage = {
+  const sharedImage = {
     id: `img_${Date.now()}`,
     url: imageData.url,
     caption: imageData.caption || '',
@@ -381,14 +381,23 @@ export async function shareDebateImage(
     timestamp: Date.now()
   };
 
-  await updateRoomData(roomId, { currentSharedImage: sharedImage });
+  try {
+    const docRef = doc(db, 'debate_rooms', roomId);
+    await setDoc(docRef, { currentSharedImage: sharedImage }, { merge: true });
+    console.log("✅ تم مشاركة الصورة في Firestore");
+  } catch (e) {
+    console.error("❌ خطأ مشاركة الصورة في Firestore:", e);
+  }
 }
 
-/**
- * Remove current shared image
- */
 export async function removeSharedDebateImage(roomId: string): Promise<void> {
-  await updateRoomData(roomId, { currentSharedImage: null });
+  try {
+    const docRef = doc(db, 'debate_rooms', roomId);
+    await setDoc(docRef, { currentSharedImage: null }, { merge: true });
+    console.log("✅ تم إزالة الصورة من Firestore");
+  } catch (e) {
+    console.error("❌ خطأ إزالة الصورة من Firestore:", e);
+  }
 }
 
 /**
